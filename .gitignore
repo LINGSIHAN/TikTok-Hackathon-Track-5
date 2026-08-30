@@ -1,0 +1,28 @@
+# Python environments and bytecode
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# Local data and downloaded datasets (never commit)
+data/raw/**
+data/processed/**
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Experiment outputs (only curated final assets should be force-added)
+artifacts/checkpoints/**
+artifacts/metrics/**
+artifacts/figures/**
+!artifacts/checkpoints/.gitkeep
+!artifacts/metrics/.gitkeep
+!artifacts/figures/.gitkeep
+
+# Secrets and local tooling
+.env
+.env.*
+!*.example
+.streamlit/secrets.toml
+.kaggle/
+.DS_Store
