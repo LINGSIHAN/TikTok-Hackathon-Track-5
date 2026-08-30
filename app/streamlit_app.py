@@ -7,9 +7,17 @@ import importlib
 import io
 import logging
 import os
+import sys
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
+
+# Streamlit Cloud adds the entrypoint directory, rather than necessarily adding
+# the repository root, to ``sys.path``. Resolve imports from this trusted local
+# checkout so the app behaves the same from the repo root and from ``app/``.
+REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+if str(REPOSITORY_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPOSITORY_ROOT))
 
 import pandas as pd
 import streamlit as st
@@ -56,7 +64,8 @@ def load_predictor(checkpoint_path: str, checkpoint_version: int) -> Predictor:
 
 def _checkpoint_path() -> Path:
     configured = os.environ.get("AIGC_CHECKPOINT_PATH")
-    return Path(configured) if configured else DEFAULT_CHECKPOINT_PATH
+    path = Path(configured) if configured else DEFAULT_CHECKPOINT_PATH
+    return path if path.is_absolute() else REPOSITORY_ROOT / path
 
 
 def _read_uploaded_image(uploaded_file: Any) -> tuple[Image.Image, bytes]:
