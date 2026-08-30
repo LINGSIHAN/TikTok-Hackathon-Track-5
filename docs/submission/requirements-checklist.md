@@ -43,4 +43,4 @@
 
 - [x] The organizer WildFake demonstration subset was not used for training.
 - [x] It was not used for threshold selection or model selection.
-- [x] Generated variants of one base image do not cross dataset splits.
+- [x] No repeated manifest source ID or normalized-image hash crosses splits.

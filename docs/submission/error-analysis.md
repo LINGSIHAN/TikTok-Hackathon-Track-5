@@ -39,7 +39,9 @@ the false-negative rate from 30.67% to 21.67%, and improves ROC-AUC from
 0.986133 to 0.990278. The mean transformed ROC-AUC difference is too small to
 present as a confident universal gain.
 
-The complete clean-versus-transform chart is
+The compact baseline-versus-robust summary is
+[`artifacts/figures/model_comparison.png`](../../artifacts/figures/model_comparison.png).
+The raw per-scenario robust-model plot remains available at
 [`artifacts/metrics/robustness.png`](../../artifacts/metrics/robustness.png).
 
 ## Clean-image errors
@@ -104,5 +106,7 @@ python scripts/generate_submission_evidence.py
   decisions.
 
 All headline metrics were independently recomputed from the exported prediction
-rows with zero discrepancy. The export is bound to the manifest and both model
-files by SHA-256 values in `artifacts/metrics/run_context.json`.
+rows with zero discrepancy. `artifacts/metrics/run_context.json` records the
+manifest and both original checkpoint SHA-256 values. The manifest and selected
+robust checkpoint are published here; the clean checkpoint remains in the local
+ignored audit archive while its metrics and predictions are public.

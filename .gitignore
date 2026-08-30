@@ -53,6 +53,7 @@ artifacts/figures/**
 !artifacts/metrics/clean_baseline/robustness.png
 !artifacts/figures/error_analysis.png
 !artifacts/figures/confusion_matrix.png
+!artifacts/figures/model_comparison.png
 *.log
 
 # OS files

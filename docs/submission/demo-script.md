@@ -28,8 +28,11 @@ severity, while the UI keeps the interactive view concise.
 ## 5. Batch contract and evidence (30 seconds)
 
 Show the directory inference command and resulting JSON containing `image_path`
-and `pred`. Then show the baseline-versus-robust clean/transformed figure and one
-representative false positive and false negative from the exported predictions.
+and `pred`. Then show `artifacts/figures/model_comparison.png` and the error-count
+figures. The public repository records representative false-positive and
+false-negative identifiers and scores but not their raw pixels. Show those two
+images only if they have been reacquired from the pinned SID_Set revision under
+its license; otherwise show the identifiers and state that limitation.
 
 ## 6. Limitations and close (20 seconds)
 

@@ -211,6 +211,138 @@ def save_error_analysis(scenarios: Sequence[dict[str, Any]], output_path: Path) 
     plt.close(figure)
 
 
+def save_model_comparison(metrics_root: Path, output_path: Path) -> None:
+    """Save a focused dumbbell comparison of the two controlled model runs."""
+
+    import numpy as np
+
+    plt = _configure_matplotlib()
+    robust = json.loads((metrics_root / "metrics.json").read_text(encoding="utf-8"))
+    baseline = json.loads(
+        (metrics_root / "clean_baseline" / "metrics.json").read_text(encoding="utf-8")
+    )
+    labels = [
+        "Clean ROC-AUC",
+        "Mean transformed ROC-AUC",
+        "Worst transformed ROC-AUC",
+        "Mean transformed balanced accuracy",
+    ]
+    baseline_values = [
+        float(baseline["summary"]["clean"]["roc_auc"]),
+        float(baseline["summary"]["mean_transformed"]["roc_auc"]),
+        float(baseline["summary"]["worst_case"]["value"]),
+        float(baseline["summary"]["mean_transformed"]["balanced_accuracy"]),
+    ]
+    robust_values = [
+        float(robust["summary"]["clean"]["roc_auc"]),
+        float(robust["summary"]["mean_transformed"]["roc_auc"]),
+        float(robust["summary"]["worst_case"]["value"]),
+        float(robust["summary"]["mean_transformed"]["balanced_accuracy"]),
+    ]
+    if not all(
+        math.isfinite(value) and 0.0 <= value <= 1.0
+        for value in baseline_values + robust_values
+    ):
+        raise ValueError("comparison metrics must be finite values between zero and one")
+
+    positions = np.arange(len(labels))
+    minimum = min(baseline_values + robust_values)
+    x_min = max(0.0, math.floor((minimum - 0.005) * 100) / 100)
+    figure, axis = plt.subplots(figsize=(11.5, 6.2), facecolor="white")
+    for position, baseline_value, robust_value in zip(
+        positions, baseline_values, robust_values
+    ):
+        axis.plot(
+            [baseline_value, robust_value],
+            [position, position],
+            color="#94a3b8",
+            linewidth=2.4,
+            zorder=1,
+        )
+    axis.scatter(
+        baseline_values,
+        positions,
+        s=105,
+        facecolors="white",
+        edgecolors="#475569",
+        linewidths=2.2,
+        marker="o",
+        label="Clean-training baseline",
+        zorder=3,
+    )
+    axis.scatter(
+        robust_values,
+        positions,
+        s=105,
+        color="#2563eb",
+        edgecolors="#1e3a8a",
+        linewidths=1.2,
+        marker="D",
+        label="Robustness-trained",
+        zorder=4,
+    )
+    label_offset = max(0.0007, (1.0 - x_min) * 0.012)
+    for position, baseline_value, robust_value in zip(
+        positions, baseline_values, robust_values
+    ):
+        left_value = min(baseline_value, robust_value)
+        right_value = max(baseline_value, robust_value)
+        left_text = (
+            f"{baseline_value:.2%}" if baseline_value == left_value else f"{robust_value:.2%}"
+        )
+        right_text = (
+            f"{robust_value:.2%}" if robust_value == right_value else f"{baseline_value:.2%}"
+        )
+        axis.text(
+            left_value - label_offset,
+            position,
+            left_text,
+            ha="right",
+            va="center",
+            fontsize=9,
+            color="#334155",
+        )
+        axis.text(
+            right_value + label_offset,
+            position,
+            right_text,
+            ha="left",
+            va="center",
+            fontsize=9,
+            color="#334155",
+        )
+
+    axis.set_yticks(positions, labels=labels)
+    axis.invert_yaxis()
+    axis.set_xlim(x_min, 1.002)
+    axis.set_xlabel("Score (focused scale)")
+    axis.xaxis.set_major_formatter(lambda value, _position: f"{value:.0%}")
+    axis.set_title(
+        "Controlled clean-training and robustness-training comparison",
+        fontsize=16,
+        weight="bold",
+        pad=34,
+    )
+    axis.text(
+        0.5,
+        1.02,
+        "Same 600-image test split · 20 evaluation scenarios · exact values shown",
+        transform=axis.transAxes,
+        ha="center",
+        va="bottom",
+        fontsize=10,
+        color="#475569",
+    )
+    axis.grid(axis="x", color="#cbd5e1", linewidth=0.8, alpha=0.7)
+    axis.set_axisbelow(True)
+    axis.spines[["top", "right"]].set_visible(False)
+    axis.legend(loc="lower right", frameon=False)
+    figure.tight_layout()
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    figure.savefig(output_path, dpi=180, bbox_inches="tight", facecolor="white")
+    plt.close(figure)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Generate confusion-matrix and error-analysis submission figures."
@@ -236,10 +368,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     clean = next(item for item in scenarios if item["key"] == ("clean", ""))
     confusion_path = args.output_dir / "confusion_matrix.png"
     error_path = args.output_dir / "error_analysis.png"
+    comparison_path = args.output_dir / "model_comparison.png"
     save_confusion_matrix(clean, threshold, confusion_path)
     save_error_analysis(scenarios, error_path)
+    save_model_comparison(args.metrics_root, comparison_path)
     print(f"Generated {confusion_path}")
     print(f"Generated {error_path}")
+    print(f"Generated {comparison_path}")
     return 0
 
 

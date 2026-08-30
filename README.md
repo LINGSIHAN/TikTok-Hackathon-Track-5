@@ -71,8 +71,10 @@ superiority. Both models are weakest under Gaussian noise at `sigma=0.10`; the
 robust model improves balanced accuracy there from 84.67% to 89.00%. It is
 slightly worse on clean ROC-AUC and wins ROC-AUC in 8 of 20 scenarios. See the
 full [`evaluation and error analysis`](docs/submission/error-analysis.md), the
-[`robustness figure`](artifacts/metrics/robustness.png), and the exported
+[`controlled model comparison`](artifacts/figures/model_comparison.png), and the exported
 [`run context`](artifacts/metrics/run_context.json).
+
+![Controlled comparison of the clean-training baseline and robustness-trained model](artifacts/figures/model_comparison.png)
 
 ## Repository layout
 
