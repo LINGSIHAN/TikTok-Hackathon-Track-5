@@ -1,0 +1,45 @@
+{
+  "best_epoch": 4,
+  "best_validation_loss": 0.1401070946455002,
+  "checkpoint_path": "artifacts/checkpoints/model.safetensors",
+  "config": {
+    "data": {
+      "batch_size": 64,
+      "image_size": 224,
+      "manifest_path": "data/processed/manifest.csv",
+      "num_workers": 2,
+      "test_split": "test",
+      "train_split": "train",
+      "val_split": "val"
+    },
+    "model": {
+      "freeze_backbone": true,
+      "pretrained": true,
+      "unfreeze_last_blocks": 1
+    },
+    "output": {
+      "checkpoint_path": "artifacts/checkpoints/model.safetensors",
+      "history_path": "artifacts/metrics/training_history.json",
+      "metadata_path": "artifacts/checkpoints/model_metadata.json"
+    },
+    "robustness": {
+      "clean_probability": 0.35,
+      "enabled": true
+    },
+    "seed": 42,
+    "training": {
+      "epochs": 4,
+      "learning_rate": 0.0003,
+      "mixed_precision": true,
+      "patience": 2,
+      "weight_decay": 0.0001
+    }
+  },
+  "device": "cuda",
+  "elapsed_seconds": 398.98723459243774,
+  "epochs_completed": 4,
+  "parameter_count": 4008829,
+  "preprocessing_contract": "pil-exif-white-alpha-short-edge-bilinear-center-crop-imagenet-v1",
+  "schema_version": 1,
+  "trainable_parameter_count": 413441
+}

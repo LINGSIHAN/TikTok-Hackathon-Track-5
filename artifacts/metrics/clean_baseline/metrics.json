@@ -1,0 +1,326 @@
+{
+  "checkpoint": "artifacts/runs/clean/model.safetensors",
+  "checkpoint_metadata": {
+    "architecture": "efficientnet_b0_binary",
+    "best_epoch": "4",
+    "best_validation_loss": "0.1310540471",
+    "image_size": "224",
+    "output": "aigc_logit",
+    "preprocessing_contract": "pil-exif-white-alpha-short-edge-bilinear-center-crop-imagenet-v1",
+    "robust_training": "false",
+    "seed": "42"
+  },
+  "scenarios": [
+    {
+      "metrics": {
+        "average_precision": 0.9971062867928716,
+        "balanced_accuracy": 0.9666666666666667,
+        "brier_score": 0.025460890120203458,
+        "f1": 0.9666666666666667,
+        "false_negative_rate": 0.03333333333333333,
+        "false_positive_rate": 0.03333333333333333,
+        "roc_auc": 0.9970555555555556
+      },
+      "num_samples": 600,
+      "severity": null,
+      "transform": "clean"
+    },
+    {
+      "metrics": {
+        "average_precision": 0.9965359028318365,
+        "balanced_accuracy": 0.9633333333333334,
+        "brier_score": 0.02697139101798922,
+        "f1": 0.9634551495016611,
+        "false_negative_rate": 0.03333333333333333,
+        "false_positive_rate": 0.04,
+        "roc_auc": 0.9964666666666666
+      },
+      "num_samples": 600,
+      "severity": 90,
+      "transform": "jpeg"
+    },
+    {
+      "metrics": {
+        "average_precision": 0.9972291025966197,
+        "balanced_accuracy": 0.97,
+        "brier_score": 0.025276482225530528,
+        "f1": 0.9697986577181208,
+        "false_negative_rate": 0.03666666666666667,
+        "false_positive_rate": 0.023333333333333334,
+        "roc_auc": 0.9971777777777778
+      },
+      "num_samples": 600,
+      "severity": 70,
+      "transform": "jpeg"
+    },
+    {
+      "metrics": {
+        "average_precision": 0.9972019009411526,
+        "balanced_accuracy": 0.9666666666666667,
+        "brier_score": 0.026794124526127245,
+        "f1": 0.9662162162162162,
+        "false_negative_rate": 0.04666666666666667,
+        "false_positive_rate": 0.02,
+        "roc_auc": 0.9971333333333333
+      },
+      "num_samples": 600,
+      "severity": 50,
+      "transform": "jpeg"
+    },
+    {
+      "metrics": {
+        "average_precision": 0.9929492808764563,
+        "balanced_accuracy": 0.9516666666666667,
+        "brier_score": 0.03634354355180639,
+        "f1": 0.9512605042016806,
+        "false_negative_rate": 0.056666666666666664,
+        "false_positive_rate": 0.04,
+        "roc_auc": 0.9930222222222223
+      },
+      "num_samples": 600,
+      "severity": 30,
+      "transform": "jpeg"
+    },
+    {
+      "metrics": {
+        "average_precision": 0.997271166129357,
+        "balanced_accuracy": 0.9666666666666667,
+        "brier_score": 0.024871432063253558,
+        "f1": 0.9666666666666667,
+        "false_negative_rate": 0.03333333333333333,
+        "false_positive_rate": 0.03333333333333333,
+        "roc_auc": 0.9972222222222222
+      },
+      "num_samples": 600,
+      "severity": 0.5,
+      "transform": "gaussian_blur"
+    },
+    {
+      "metrics": {
+        "average_precision": 0.997311598947023,
+        "balanced_accuracy": 0.9666666666666667,
+        "brier_score": 0.025095088741456873,
+        "f1": 0.9668874172185431,
+        "false_negative_rate": 0.02666666666666667,
+        "false_positive_rate": 0.04,
+        "roc_auc": 0.9972555555555556
+      },
+      "num_samples": 600,
+      "severity": 1.0,
+      "transform": "gaussian_blur"
+    },
+    {
+      "metrics": {
+        "average_precision": 0.9962927196627357,
+        "balanced_accuracy": 0.9583333333333334,
+        "brier_score": 0.03111133438754708,
+        "f1": 0.9589490968801314,
+        "false_negative_rate": 0.02666666666666667,
+        "false_positive_rate": 0.056666666666666664,
+        "roc_auc": 0.9961444444444445
+      },
+      "num_samples": 600,
+      "severity": 2.0,
+      "transform": "gaussian_blur"
+    },
+    {
+      "metrics": {
+        "average_precision": 0.997101469480033,
+        "balanced_accuracy": 0.9650000000000001,
+        "brier_score": 0.02553873326096038,
+        "f1": 0.9650582362728786,
+        "false_negative_rate": 0.03333333333333333,
+        "false_positive_rate": 0.03666666666666667,
+        "roc_auc": 0.9970444444444444
+      },
+      "num_samples": 600,
+      "severity": 0.5,
+      "transform": "resize"
+    },
+    {
+      "metrics": {
+        "average_precision": 0.9958251576841056,
+        "balanced_accuracy": 0.9566666666666667,
+        "brier_score": 0.030633671998636144,
+        "f1": 0.9575163398692811,
+        "false_negative_rate": 0.023333333333333334,
+        "false_positive_rate": 0.06333333333333334,
+        "roc_auc": 0.9957888888888888
+      },
+      "num_samples": 600,
+      "severity": 0.25,
+      "transform": "resize"
+    },
+    {
+      "metrics": {
+        "average_precision": 0.9968202516741614,
+        "balanced_accuracy": 0.9683333333333333,
+        "brier_score": 0.029674242765642685,
+        "f1": 0.9675213675213675,
+        "false_negative_rate": 0.056666666666666664,
+        "false_positive_rate": 0.006666666666666667,
+        "roc_auc": 0.9967555555555555
+      },
+      "num_samples": 600,
+      "severity": 0.02,
+      "transform": "gaussian_noise"
+    },
+    {
+      "metrics": {
+        "average_precision": 0.9936574705901502,
+        "balanced_accuracy": 0.9083333333333333,
+        "brier_score": 0.06440130729366719,
+        "f1": 0.8994515539305301,
+        "false_negative_rate": 0.18,
+        "false_positive_rate": 0.0033333333333333335,
+        "roc_auc": 0.9936
+      },
+      "num_samples": 600,
+      "severity": 0.05,
+      "transform": "gaussian_noise"
+    },
+    {
+      "metrics": {
+        "average_precision": 0.9866321535931232,
+        "balanced_accuracy": 0.8466666666666667,
+        "brier_score": 0.11245057801717245,
+        "f1": 0.8188976377952756,
+        "false_negative_rate": 0.30666666666666664,
+        "false_positive_rate": 0.0,
+        "roc_auc": 0.9861333333333333
+      },
+      "num_samples": 600,
+      "severity": 0.1,
+      "transform": "gaussian_noise"
+    },
+    {
+      "metrics": {
+        "average_precision": 0.9959475302380552,
+        "balanced_accuracy": 0.9666666666666667,
+        "brier_score": 0.0273902844384278,
+        "f1": 0.9665551839464883,
+        "false_negative_rate": 0.03666666666666667,
+        "false_positive_rate": 0.03,
+        "roc_auc": 0.9959666666666667
+      },
+      "num_samples": 600,
+      "severity": -0.2,
+      "transform": "brightness"
+    },
+    {
+      "metrics": {
+        "average_precision": 0.9956851385940655,
+        "balanced_accuracy": 0.9683333333333333,
+        "brier_score": 0.027119955127107527,
+        "f1": 0.9682804674457429,
+        "false_negative_rate": 0.03333333333333333,
+        "false_positive_rate": 0.03,
+        "roc_auc": 0.9957888888888888
+      },
+      "num_samples": 600,
+      "severity": 0.2,
+      "transform": "brightness"
+    },
+    {
+      "metrics": {
+        "average_precision": 0.9951329570003896,
+        "balanced_accuracy": 0.9550000000000001,
+        "brier_score": 0.03141922020026543,
+        "f1": 0.9541595925297114,
+        "false_negative_rate": 0.06333333333333334,
+        "false_positive_rate": 0.02666666666666667,
+        "roc_auc": 0.9951444444444445
+      },
+      "num_samples": 600,
+      "severity": -0.2,
+      "transform": "contrast"
+    },
+    {
+      "metrics": {
+        "average_precision": 0.9974681850393657,
+        "balanced_accuracy": 0.9683333333333333,
+        "brier_score": 0.02473059578535763,
+        "f1": 0.9686985172981878,
+        "false_negative_rate": 0.02,
+        "false_positive_rate": 0.043333333333333335,
+        "roc_auc": 0.9974222222222222
+      },
+      "num_samples": 600,
+      "severity": 0.2,
+      "transform": "contrast"
+    },
+    {
+      "metrics": {
+        "average_precision": 0.997274750680097,
+        "balanced_accuracy": 0.9666666666666667,
+        "brier_score": 0.025001949551127837,
+        "f1": 0.9666666666666667,
+        "false_negative_rate": 0.03333333333333333,
+        "false_positive_rate": 0.03333333333333333,
+        "roc_auc": 0.9972333333333333
+      },
+      "num_samples": 600,
+      "severity": -0.2,
+      "transform": "saturation"
+    },
+    {
+      "metrics": {
+        "average_precision": 0.9968935951408644,
+        "balanced_accuracy": 0.9633333333333334,
+        "brier_score": 0.026251820116798146,
+        "f1": 0.9634551495016611,
+        "false_negative_rate": 0.03333333333333333,
+        "false_positive_rate": 0.04,
+        "roc_auc": 0.9968333333333333
+      },
+      "num_samples": 600,
+      "severity": 0.2,
+      "transform": "saturation"
+    },
+    {
+      "metrics": {
+        "average_precision": 0.9949105162499539,
+        "balanced_accuracy": 0.9633333333333334,
+        "brier_score": 0.02896932764679228,
+        "f1": 0.9633333333333334,
+        "false_negative_rate": 0.03666666666666667,
+        "false_positive_rate": 0.03666666666666667,
+        "roc_auc": 0.9949222222222223
+      },
+      "num_samples": 600,
+      "severity": 0.8,
+      "transform": "center_crop"
+    }
+  ],
+  "schema_version": 1,
+  "seed": 42,
+  "split": "test",
+  "summary": {
+    "clean": {
+      "average_precision": 0.9971062867928716,
+      "balanced_accuracy": 0.9666666666666667,
+      "brier_score": 0.025460890120203458,
+      "f1": 0.9666666666666667,
+      "false_negative_rate": 0.03333333333333333,
+      "false_positive_rate": 0.03333333333333333,
+      "roc_auc": 0.9970555555555556
+    },
+    "clean_to_worst_roc_auc_drop": 0.010922222222222278,
+    "mean_transformed": {
+      "average_precision": 0.9956916235762918,
+      "balanced_accuracy": 0.9547368421052632,
+      "brier_score": 0.03421289909029823,
+      "f1": 0.9527804081323235,
+      "false_negative_rate": 0.058771929824561406,
+      "false_positive_rate": 0.031754385964912285,
+      "roc_auc": 0.9956345029239767
+    },
+    "worst_case": {
+      "metric": "roc_auc",
+      "severity": 0.1,
+      "transform": "gaussian_noise",
+      "value": 0.9861333333333333
+    }
+  },
+  "threshold": 0.5
+}

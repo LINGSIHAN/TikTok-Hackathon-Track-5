@@ -1,0 +1,41 @@
+{
+  "repository": "https://github.com/LINGSIHAN/TikTok-Hackathon-Track-5.git",
+  "branch": "master",
+  "commit": "e32257dfd6414e62029133bd26493ce7cac685a5",
+  "subset_size": 6000,
+  "seed": 42,
+  "shuffle_buffer": 512,
+  "dataset_revision": "dc03ead57929879319ce30a82bfcfb8d317b10bd",
+  "dataset_revision_status": "pinned",
+  "python": "3.12.13",
+  "pytorch": "2.10.0+cu128",
+  "torchvision": "0.25.0+cu128",
+  "pillow": "11.3.0",
+  "numpy": "2.0.2",
+  "pandas": "2.3.3",
+  "datasets": "4.8.5",
+  "huggingface_hub": "1.11.0",
+  "safetensors": "0.7.0",
+  "cuda_runtime": "12.8",
+  "gpu": "Tesla T4",
+  "gpu_capability": [
+    7,
+    5
+  ],
+  "required_cuda_arch": "sm_75",
+  "compiled_cuda_arches": [
+    "sm_70",
+    "sm_75",
+    "sm_80",
+    "sm_86",
+    "sm_90",
+    "sm_100",
+    "sm_120"
+  ],
+  "cuda_probe_checksum": 3680.0,
+  "generated_at_utc": "2026-08-30T13:50:17.974013+00:00",
+  "preprocessing_contract": "pil-exif-white-alpha-short-edge-bilinear-center-crop-imagenet-v1",
+  "manifest_sha256": "6267a8d7e7749c1870601e196fe7ce1cc0fc2542a9975fa939832817e7fd3d9d",
+  "checkpoint_sha256": "806fbabc5ecae8394369d08738cbf0c993568137d323a8133167e4557d04eed2",
+  "clean_checkpoint_sha256": "29e13bf808b9df7942bb5c5038707c947581442f59df8f90b1da284f8252154f"
+}

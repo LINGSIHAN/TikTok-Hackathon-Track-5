@@ -1,0 +1,35 @@
+{
+  "class_counts": {
+    "0_real": 3000,
+    "1_full_synthetic": 3000
+  },
+  "dataset": "saberzl/SID_Set",
+  "dataset_revision": "dc03ead57929879319ce30a82bfcfb8d317b10bd",
+  "dataset_url": "https://huggingface.co/datasets/saberzl/SID_Set",
+  "image_normalization": "RGB JPEG, quality 95, 4:4:4 subsampling",
+  "license": "CC BY 4.0 (per the SID_Set dataset card)",
+  "schema_version": 1,
+  "seed": 42,
+  "sha256_definition": "SHA-256 of the stored normalized JPEG bytes",
+  "shuffle_buffer": 512,
+  "skipped": {
+    "class_quota_full": 25,
+    "excluded_label": 3026
+  },
+  "source_split": "train",
+  "split_counts": {
+    "test": {
+      "0": 300,
+      "1": 300
+    },
+    "train": {
+      "0": 2400,
+      "1": 2400
+    },
+    "val": {
+      "0": 300,
+      "1": 300
+    }
+  },
+  "total": 6000
+}

@@ -53,6 +53,27 @@ grouped train / val / test manifest
 Free services can impose quotas, sleep when idle, or change availability. The
 local demo and recorded video remain the reliable submission fallback.
 
+## Verified held-out results
+
+The final controlled Kaggle run used 6,000 balanced SID_Set images and evaluated
+both models on the same 600-image test split under the complete 20-scenario
+clean and transformation grid.
+
+| Result | Clean baseline | Robustness-trained | Robust-model difference |
+| --- | ---: | ---: | ---: |
+| Clean ROC-AUC | 0.997056 | 0.996400 | -0.000656 |
+| Mean transformed ROC-AUC | 0.995635 | 0.995784 | +0.000149 |
+| Worst transformed ROC-AUC | 0.986133 | 0.990278 | +0.004144 |
+| Mean transformed balanced accuracy | 95.47% | 95.83% | +0.36 pp |
+
+The defensible gain is improved worst-case resilience, not universal model
+superiority. Both models are weakest under Gaussian noise at `sigma=0.10`; the
+robust model improves balanced accuracy there from 84.67% to 89.00%. It is
+slightly worse on clean ROC-AUC and wins ROC-AUC in 8 of 20 scenarios. See the
+full [`evaluation and error analysis`](docs/submission/error-analysis.md), the
+[`robustness figure`](artifacts/metrics/robustness.png), and the exported
+[`run context`](artifacts/metrics/run_context.json).
+
 ## Repository layout
 
 ```text
@@ -165,14 +186,18 @@ or model selection.
 
 - Core training, inference, transformation, evaluation, and Streamlit code is
   integrated.
-- The data pipeline passes a direct synthetic-fixture smoke test for exact class
-  balance, deterministic splits, source isolation, RGB loading, and manifest
-  safety.
-- The final Kaggle training run has **not** happened yet. Consequently, no
-  checkpoint, accuracy claim, robustness result, public Streamlit URL, or error
-  analysis is claimed here.
-- The next gate is the complete Kaggle notebook run; measured artifacts then
-  feed the README results, error analysis, Devpost write-up, and demo video.
+- The final Kaggle T4 run completed against repository commit `e32257d`. Its
+  selected checkpoint, manifest, metrics, predictions, provenance, and figures
+  are included in the public repository.
+- The 6,000-row manifest is balanced and duplicate-free, with no source ID
+  crossing train, validation, or test splits. Both 12,000-row prediction files
+  cover all 20 scenarios and all exported metrics were independently recomputed
+  with zero discrepancy.
+- The Kaggle pipeline passed its CUDA checkpoint smoke test before packaging.
+  The promoted checkpoint also passes local CPU loading/inference, the required
+  directory-to-JSON CLI, all 167 repository tests, and a headless Streamlit
+  health check. The remaining external gates are the public Streamlit
+  deployment, two-image live smoke test, demo video, and final Devpost links.
 
 See [`docs/submission/requirements-checklist.md`](docs/submission/requirements-checklist.md)
 for the remaining evidence and submission gates.
