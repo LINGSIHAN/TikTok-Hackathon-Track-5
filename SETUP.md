@@ -73,11 +73,32 @@ The reproducible free-training path is
 `notebooks/train_kaggle.ipynb`. In Kaggle:
 
 1. Create a notebook and import the repository notebook.
-2. In **Settings**, enable an available GPU accelerator.
+2. In **Settings**, choose **GPU T4 x2** when it is available. The code uses one
+   T4. Current CUDA 12.8 PyTorch builds may omit the P100's `sm_60` kernels; the
+   notebook runs a real CUDA operation immediately and stops with a targeted
+   recovery message before it touches prepared data.
 3. Enable internet access so the notebook can clone the repository, install
    dependencies, and stream SID_Set.
-4. Run all cells from a clean session.
+4. Run all cells. On a retry, the notebook fast-forwards an existing trusted
+   clone and reuses a complete validated 6,000-image subset instead of deleting
+   and downloading it again.
 5. Download `hackathon_export.zip` only after the final validation cell passes.
+
+If the 6,000 prepared images already exist and only training must be repeated,
+run this in one fresh Kaggle code cell. It validates every stored image hash,
+reuses the subset, retrains both controlled configurations, and recreates the
+ZIP without downloading SID_Set again:
+
+```python
+%cd /kaggle/working/TikTok-Hackathon-Track-5
+!git pull --ff-only origin master
+!python -m pip install -q -r requirements-train.txt
+!python scripts/retrain_kaggle_subset.py
+```
+
+Wait for `Validated export ready:` before downloading the replacement archive.
+Run the script with `!python`, not `%run`, so training and validation use a fresh
+interpreter.
 
 No Kaggle API token or paid service is needed for this path. Free GPU quota and
 accelerator availability are controlled by Kaggle.

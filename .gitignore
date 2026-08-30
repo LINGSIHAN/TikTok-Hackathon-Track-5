@@ -46,6 +46,7 @@ artifacts/figures/**
 !artifacts/metrics/robustness.png
 !artifacts/metrics/training_history.json
 !artifacts/metrics/run_context.json
+!artifacts/metrics/pip_freeze.txt
 !artifacts/metrics/clean_baseline/
 !artifacts/metrics/clean_baseline/metrics.json
 !artifacts/metrics/clean_baseline/predictions.csv

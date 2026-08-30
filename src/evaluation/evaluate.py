@@ -15,13 +15,14 @@ import torch
 from PIL import Image
 from torch.utils.data import DataLoader
 
+from src.data.preprocessing import (
+    build_image_preprocess,
+    normalize_pil_image,
+    resolve_checkpoint_image_size,
+)
 from src.evaluation.metrics import compute_binary_metrics
 from src.evaluation.plotting import save_robustness_plot
 from src.training.engine import extract_logits, resolve_device, seed_worker, set_global_seed
-
-
-_IMAGENET_MEAN = (0.485, 0.456, 0.406)
-_IMAGENET_STD = (0.229, 0.224, 0.225)
 
 
 @dataclass(frozen=True)
@@ -40,20 +41,12 @@ class EvaluationImageTransform:
         *,
         seed: int = 42,
     ) -> None:
-        from torchvision import transforms
-
         self.scenario = scenario
         self.seed = seed
-        self.preprocess = transforms.Compose(
-            [
-                transforms.Resize((image_size, image_size)),
-                transforms.ToTensor(),
-                transforms.Normalize(_IMAGENET_MEAN, _IMAGENET_STD),
-            ]
-        )
+        self.preprocess = build_image_preprocess(image_size)
 
     def __call__(self, image: Image.Image) -> torch.Tensor:
-        image = image.convert("RGB")
+        image = normalize_pil_image(image)
         if self.scenario.transform != "clean":
             from src.transforms.robustness import apply_transform
 
@@ -266,6 +259,10 @@ def evaluate_checkpoint(
     device = resolve_device(device_name)
     model = build_model(pretrained=False, freeze_backbone=False, unfreeze_last_blocks=0)
     checkpoint_metadata = load_checkpoint(model, checkpoint_path, device=str(device))
+    preprocessing_size = resolve_checkpoint_image_size(
+        checkpoint_metadata,
+        requested_image_size=image_size,
+    )
     model.to(device)
 
     manifest_paths = _manifest_paths(manifest_path, split)
@@ -281,7 +278,11 @@ def evaluate_checkpoint(
         dataset = ImageManifestDataset(
             manifest_path,
             split,
-            transform=EvaluationImageTransform(image_size, scenario, seed=seed),
+            transform=EvaluationImageTransform(
+                preprocessing_size,
+                scenario,
+                seed=seed,
+            ),
         )
         loader = DataLoader(
             dataset,

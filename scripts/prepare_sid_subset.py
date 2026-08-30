@@ -13,16 +13,25 @@ import hashlib
 import io
 import json
 import math
+import sys
 from collections import Counter, defaultdict
 from collections.abc import Iterable, Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
+REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+REPOSITORY_ROOT_TEXT = str(REPOSITORY_ROOT)
+if REPOSITORY_ROOT_TEXT not in sys.path:
+    sys.path.insert(0, REPOSITORY_ROOT_TEXT)
+
 import pandas as pd
-from PIL import Image, ImageOps
+from PIL import Image
+
+from src.data.preprocessing import normalize_pil_image
 
 
 DEFAULT_DATASET = "saberzl/SID_Set"
+DEFAULT_DATASET_REVISION = "dc03ead57929879319ce30a82bfcfb8d317b10bd"
 DEFAULT_TOTAL = 6_000
 MANIFEST_COLUMNS = (
     "path",
@@ -65,6 +74,11 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         help="Upstream split to stream; the default keeps SID validation unused.",
     )
     parser.add_argument(
+        "--revision",
+        default=DEFAULT_DATASET_REVISION,
+        help="Pinned Hugging Face dataset revision used for reproducibility.",
+    )
+    parser.add_argument(
         "--shuffle-buffer",
         type=int,
         default=512,
@@ -102,7 +116,7 @@ def _open_example_image(value: Any) -> Image.Image:
 
     if isinstance(value, Image.Image):
         value.load()
-        return ImageOps.exif_transpose(value).convert("RGB")
+        return normalize_pil_image(value)
 
     if isinstance(value, Mapping):
         raw_bytes = value.get("bytes")
@@ -120,7 +134,7 @@ def _open_example_image(value: Any) -> Image.Image:
 
     with Image.open(source) as opened:
         opened.load()
-        return ImageOps.exif_transpose(opened).convert("RGB")
+        return normalize_pil_image(opened)
 
 
 def _normalized_jpeg(image: Image.Image) -> tuple[bytes, str]:
@@ -226,6 +240,8 @@ def prepare_examples(
     output_root: str | Path,
     dataset_name: str = DEFAULT_DATASET,
     source_split: str = "train",
+    dataset_revision: str = DEFAULT_DATASET_REVISION,
+    shuffle_buffer: int = 512,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
     """Materialize a balanced subset from a stream of SID-like examples."""
 
@@ -347,9 +363,11 @@ def prepare_examples(
         "schema_version": 1,
         "dataset": dataset_name,
         "dataset_url": f"https://huggingface.co/datasets/{dataset_name}",
+        "dataset_revision": dataset_revision,
         "source_split": source_split,
         "license": "CC BY 4.0 (per the SID_Set dataset card)",
         "seed": seed,
+        "shuffle_buffer": shuffle_buffer,
         "total": total,
         "class_counts": {"0_real": selected[0], "1_full_synthetic": selected[1]},
         "split_counts": split_counts,
@@ -372,6 +390,7 @@ def stream_sid_examples(
     *,
     dataset_name: str,
     source_split: str,
+    dataset_revision: str,
     seed: int,
     shuffle_buffer: int,
 ) -> Iterable[Mapping[str, Any]]:
@@ -388,6 +407,7 @@ def stream_sid_examples(
     dataset = load_dataset(
         dataset_name,
         split=source_split,
+        revision=dataset_revision,
         streaming=True,
     )
     required = {"image", "label"}
@@ -414,6 +434,7 @@ def process_and_build_manifest(
     seed: int = 42,
     dataset_name: str = DEFAULT_DATASET,
     source_split: str = "train",
+    dataset_revision: str = DEFAULT_DATASET_REVISION,
     shuffle_buffer: int = 512,
     output_root: str | Path | None = None,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
@@ -428,6 +449,7 @@ def process_and_build_manifest(
     examples = stream_sid_examples(
         dataset_name=dataset_name,
         source_split=source_split,
+        dataset_revision=dataset_revision,
         seed=seed,
         shuffle_buffer=shuffle_buffer,
     )
@@ -438,6 +460,8 @@ def process_and_build_manifest(
         output_root=root,
         dataset_name=dataset_name,
         source_split=source_split,
+        dataset_revision=dataset_revision,
+        shuffle_buffer=shuffle_buffer,
     )
 
 
@@ -448,6 +472,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         seed=args.seed,
         dataset_name=args.dataset,
         source_split=args.source_split,
+        dataset_revision=args.revision,
         shuffle_buffer=args.shuffle_buffer,
         output_root=args.output_root,
     )

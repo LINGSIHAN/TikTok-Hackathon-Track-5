@@ -24,6 +24,9 @@ training, threshold selection, and model selection.
 
 Preparation is deterministic for a fixed seed and:
 
+- pins new SID_Set preparations to Hugging Face revision
+  `dc03ead57929879319ce30a82bfcfb8d317b10bd` (legacy prepared subsets retain
+  an explicit unrecorded revision rather than receiving a revision after the fact);
 - selects equal numbers of labels 0 and 1;
 - hashes the normalized JPEG bytes and rejects duplicates in the exact training
   representation (including distinct inputs that collapse during JPEG encoding);
@@ -31,6 +34,14 @@ Preparation is deterministic for a fixed seed and:
 - creates class-balanced `train`, `val`, and `test` splits; and
 - re-encodes both classes as RGB JPEG quality 95 with 4:4:4 subsampling, reducing
   class-specific container/format shortcuts.
+
+The retained SID subset still has a strong source-geometry imbalance: the fully
+synthetic samples are square while most authentic samples are not. The shared
+model preprocessing therefore preserves aspect ratio with a short-edge resize
+followed by a center crop; it never stretches every source directly to a square.
+This is designed to reduce that shortcut, but it does not turn an internal SID
+holdout into an unseen-generator benchmark. Public claims must state the
+evaluated dataset and scope explicitly.
 
 The generated manifest summary is the authoritative record of the counts from
 the actual run. Do not replace it with estimated numbers in the submission.

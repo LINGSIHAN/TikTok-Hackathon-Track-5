@@ -11,17 +11,19 @@ from typing import Any
 import torch
 from PIL import Image
 from torch import Tensor, nn
-from torchvision import transforms
-from torchvision.transforms import InterpolationMode
 
+from src.data.preprocessing import (
+    build_image_preprocess,
+    normalize_pil_image,
+    resolve_checkpoint_image_size,
+)
 from src.models.checkpoints import load_checkpoint
 from src.models.efficientnet import build_model
 
 
 DEFAULT_CHECKPOINT_PATH = Path("artifacts/checkpoints/model.safetensors")
 DEFAULT_IMAGE_SIZE = 224
-IMAGENET_MEAN = (0.485, 0.456, 0.406)
-IMAGENET_STD = (0.229, 0.224, 0.225)
+DEFAULT_STRESS_MAX_EDGE = 1536
 
 Preprocess = Callable[[Image.Image], Tensor]
 ApplyTransform = Callable[[Image.Image, str, Any, int], Image.Image]
@@ -29,21 +31,26 @@ ApplyTransform = Callable[[Image.Image, str, Any, int], Image.Image]
 
 def build_inference_preprocess(
     image_size: int = DEFAULT_IMAGE_SIZE,
-) -> transforms.Compose:
+) -> Preprocess:
     """Return preprocessing aligned with the repository's training pipeline."""
 
-    if image_size <= 0:
-        raise ValueError("image_size must be positive")
+    return build_image_preprocess(image_size)
 
-    return transforms.Compose(
-        [
-            transforms.Resize(
-                (image_size, image_size), interpolation=InterpolationMode.BILINEAR
-            ),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD),
-        ]
-    )
+
+def prepare_stress_image(
+    image: Image.Image,
+    max_edge: int = DEFAULT_STRESS_MAX_EDGE,
+) -> Image.Image:
+    """Return a bounded RGB working copy for memory-safe stress transforms."""
+
+    if isinstance(max_edge, bool) or not isinstance(max_edge, int):
+        raise TypeError("max_edge must be an integer")
+    if max_edge <= 0:
+        raise ValueError("max_edge must be positive")
+    working = normalize_pil_image(image)
+    if max(working.size) > max_edge:
+        working.thumbnail((max_edge, max_edge), Image.Resampling.LANCZOS)
+    return working
 
 
 class Predictor:
@@ -78,10 +85,7 @@ class Predictor:
 
         model = build_model(pretrained=False)
         metadata = load_checkpoint(model, checkpoint_path, device=device)
-        try:
-            image_size = int(metadata.get("image_size", DEFAULT_IMAGE_SIZE))
-        except (TypeError, ValueError) as error:
-            raise ValueError("checkpoint metadata contains an invalid image_size") from error
+        image_size = resolve_checkpoint_image_size(metadata)
         return cls(
             model=model,
             device=device,
@@ -112,7 +116,7 @@ class Predictor:
         for image in images:
             if not isinstance(image, Image.Image):
                 raise TypeError("every image must be a PIL.Image.Image")
-            tensor = self.preprocess(image.convert("RGB"))
+            tensor = self.preprocess(normalize_pil_image(image))
             if not isinstance(tensor, Tensor):
                 raise TypeError("preprocess must return a torch.Tensor")
             if tensor.ndim != 3:
@@ -151,19 +155,18 @@ class Predictor:
         if not isinstance(image, Image.Image):
             raise TypeError("image must be a PIL.Image.Image")
 
+        working_image = prepare_stress_image(image)
         transform_grid, apply_transform = self._resolve_transform_suite()
-        descriptors: list[tuple[str, Any]] = []
-        transformed_images: list[Image.Image] = []
+        descriptors = [
+            (str(transform_name), severity)
+            for transform_name, severities in transform_grid.items()
+            for severity in severities
+        ]
 
-        for transform_name, severities in transform_grid.items():
-            for severity in severities:
-                descriptors.append((str(transform_name), severity))
-                transformed_images.append(
-                    apply_transform(
-                        image.convert("RGB"), transform_name, severity, 42
-                    )
-                )
-
+        transformed_images = (
+            apply_transform(working_image.copy(), transform_name, severity, 42)
+            for transform_name, severity in descriptors
+        )
         probabilities = self.predict_many_pil(transformed_images)
         return [
             {

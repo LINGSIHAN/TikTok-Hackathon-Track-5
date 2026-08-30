@@ -1,9 +1,27 @@
 from pathlib import Path
+import subprocess
+import sys
 
 import pytest
 from PIL import Image
 
-from scripts.prepare_sid_subset import prepare_examples
+from scripts.prepare_sid_subset import DEFAULT_DATASET_REVISION, prepare_examples
+
+
+REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
+
+
+def test_prepare_script_direct_help_entrypoint() -> None:
+    completed = subprocess.run(
+        [sys.executable, "scripts/prepare_sid_subset.py", "--help"],
+        cwd=REPOSITORY_ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert completed.returncode == 0, completed.stderr
+    assert "usage:" in completed.stdout
 
 
 def _balanced_examples(group_count: int = 30):
@@ -61,6 +79,7 @@ def test_prepare_examples_is_balanced_grouped_and_deterministic(tmp_path):
         "0_real": 20,
         "1_full_synthetic": 20,
     }
+    assert summary["dataset_revision"] == DEFAULT_DATASET_REVISION
     assert summary["skipped"]["excluded_label"] == 1
     assert (first_root / "data/processed/manifest.csv").is_file()
     assert (first_root / "data/processed/manifest_summary.json").is_file()

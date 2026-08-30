@@ -13,7 +13,7 @@ from typing import Any
 
 import pandas as pd
 import streamlit as st
-from PIL import Image, ImageOps, UnidentifiedImageError
+from PIL import Image, UnidentifiedImageError
 
 from app.ui_logic import (
     DEFAULT_THRESHOLD,
@@ -23,12 +23,18 @@ from app.ui_logic import (
     summarize_robustness,
     validate_probability,
 )
-from src.inference.predictor import DEFAULT_CHECKPOINT_PATH, Predictor
+from src.data.preprocessing import normalize_pil_image
+from src.inference.predictor import (
+    DEFAULT_CHECKPOINT_PATH,
+    Predictor,
+    prepare_stress_image,
+)
 
 
 MAX_UPLOAD_BYTES = 10 * 1024 * 1024
 MAX_IMAGE_PIXELS = 25_000_000
-MAX_INFERENCE_EDGE = 1536
+MAX_IMAGE_EDGE = 8192
+MAX_ASPECT_RATIO = 8.0
 LOGGER = logging.getLogger(__name__)
 
 
@@ -66,20 +72,21 @@ def _read_uploaded_image(uploaded_file: Any) -> tuple[Image.Image, bytes]:
                     "This image is too large for the demo. Please use an image "
                     "under 25 megapixels."
                 )
+            longest_edge = max(opened.size)
+            shortest_edge = min(opened.size)
+            if (
+                longest_edge > MAX_IMAGE_EDGE
+                or longest_edge / shortest_edge > MAX_ASPECT_RATIO
+            ):
+                raise ValueError(
+                    "This image's dimensions are too extreme for the free-tier "
+                    "demo. Use an image no wider or taller than 8192 pixels and "
+                    "with an aspect ratio no greater than 8:1."
+                )
             if getattr(opened, "is_animated", False):
                 raise ValueError("Animated images are not supported by this demo.")
             opened.load()
-            oriented = ImageOps.exif_transpose(opened)
-            if oriented.mode in {"RGBA", "LA"} or "transparency" in oriented.info:
-                rgba = oriented.convert("RGBA")
-                background = Image.new("RGBA", rgba.size, "white")
-                image = Image.alpha_composite(background, rgba).convert("RGB")
-            else:
-                image = oriented.convert("RGB")
-            image.thumbnail(
-                (MAX_INFERENCE_EDGE, MAX_INFERENCE_EDGE),
-                Image.Resampling.LANCZOS,
-            )
+            image = normalize_pil_image(opened)
     except Image.DecompressionBombError as error:
         raise ValueError("The image dimensions exceed the safe demo limit.") from error
     except UnidentifiedImageError as error:
@@ -94,6 +101,7 @@ def _reset_results_for(upload_key: str) -> None:
         return
     st.session_state["active_upload_key"] = upload_key
     st.session_state.pop("base_probability", None)
+    st.session_state.pop("stress_base_probability", None)
     st.session_state.pop("stress_results", None)
 
 
@@ -193,7 +201,9 @@ def _render_robustness_passport(
     st.caption(
         "The same image was re-scored after common real-world transformations. "
         "This reports single-image stress stability—not dataset accuracy. "
-        "Family bars average the tested severity levels equally."
+        "Family bars average the tested severity levels equally. Large uploads "
+        "use an aspect-preserving 1536 px working copy for both the passport's "
+        "clean baseline and transformed scores."
     )
     if interpret_probability(base_probability).generated_side is None:
         st.warning(
@@ -243,14 +253,19 @@ def _render_robustness_passport(
             ]
             if str(severity) == summary.largest_shift_severity
         )
+        stress_source = prepare_stress_image(image)
         worst_preview = transform_module.apply_transform(
-            image.copy(),
+            stress_source.copy(),
             summary.largest_shift_name,
             original_severity,
             42,
         )
         original_column, transformed_column = st.columns(2)
-        original_column.image(image, caption="Original upload", use_container_width=True)
+        original_column.image(
+            stress_source,
+            caption="Stress-test working image",
+            use_container_width=True,
+        )
         transformed_column.image(
             worst_preview,
             caption=f"Most destabilizing · {summary.largest_shift_transform}",
@@ -438,7 +453,10 @@ def main() -> None:
     preview_column, result_column = st.columns([1, 1], gap="large")
     with preview_column:
         st.subheader("Uploaded image")
-        st.image(image, caption=f"{image.width} × {image.height} pixels")
+        st.image(
+            prepare_stress_image(image),
+            caption=f"{image.width} × {image.height} pixels",
+        )
 
     with result_column:
         analyze = st.button(
@@ -455,9 +473,11 @@ def main() -> None:
                     )
                     probability = validate_probability(predictor.predict_pil(image))
                 st.session_state["base_probability"] = probability
+                st.session_state.pop("stress_base_probability", None)
                 st.session_state.pop("stress_results", None)
             except Exception as error:  # Streamlit must fail visibly, not fabricate.
                 st.session_state.pop("base_probability", None)
+                st.session_state.pop("stress_base_probability", None)
                 st.session_state.pop("stress_results", None)
                 _show_inference_error("analyze this image", error)
 
@@ -479,27 +499,35 @@ def main() -> None:
                         predictor = load_predictor(
                             str(checkpoint.resolve()), checkpoint_version
                         )
+                        stress_source = prepare_stress_image(image)
+                        stress_base_probability = validate_probability(
+                            predictor.predict_pil(stress_source)
+                        )
                         stress_results = predictor.stress_test(image)
                         # Validate the complete contract before saving UI state.
                         summarize_robustness(
-                            float(base_probability),
+                            stress_base_probability,
                             stress_results,
                             expected_pairs=expected_pairs,
                         )
+                    st.session_state["stress_base_probability"] = (
+                        stress_base_probability
+                    )
                     st.session_state["stress_results"] = stress_results
                 except Exception as error:  # See comment above.
+                    st.session_state.pop("stress_base_probability", None)
                     st.session_state.pop("stress_results", None)
                     _show_inference_error("complete the stress test", error)
         elif not analyze:
             st.caption("Select **Analyze image** to generate a model score.")
 
     stress_results = st.session_state.get("stress_results")
-    base_probability = st.session_state.get("base_probability")
-    if stress_results is not None and base_probability is not None:
+    stress_base_probability = st.session_state.get("stress_base_probability")
+    if stress_results is not None and stress_base_probability is not None:
         transform_module, expected_pairs, transform_error = _load_transform_suite()
         if transform_module is not None:
             _render_robustness_passport(
-                float(base_probability),
+                float(stress_base_probability),
                 stress_results,
                 transform_module,
                 expected_pairs,

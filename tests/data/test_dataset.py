@@ -57,6 +57,19 @@ def test_dataset_preserves_order_converts_rgb_and_applies_transform(tmp_path):
     assert list(dataset.df["path"]) == ["data/raw/authentic/a.png"]
 
 
+def test_dataset_composites_transparent_images_over_white(tmp_path):
+    image_path = tmp_path / "data/raw/authentic/a.png"
+    image_path.parent.mkdir(parents=True, exist_ok=True)
+    Image.new("RGBA", (2, 2), color=(0, 0, 255, 0)).save(image_path)
+    manifest = _write_manifest(tmp_path, [_valid_rows()[0]])
+
+    image, label = ImageManifestDataset(manifest, split="train")[0]
+
+    assert image.mode == "RGB"
+    assert image.getpixel((0, 0)) == (255, 255, 255)
+    assert label == 0
+
+
 def test_compute_sha256_matches_known_content(tmp_path):
     path = tmp_path / "sample.bin"
     path.write_bytes(b"abc")

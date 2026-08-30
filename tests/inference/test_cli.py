@@ -36,6 +36,18 @@ def test_predict_directory_is_sorted_and_skips_corrupt_images(tmp_path) -> None:
     assert "skipping corrupt image 'corrupt.png'" in warnings.getvalue()
 
 
+def test_predict_directory_composites_transparency_over_white(tmp_path) -> None:
+    input_dir = tmp_path / "images"
+    input_dir.mkdir()
+    Image.new("RGBA", (2, 2), color=(0, 0, 255, 0)).save(
+        input_dir / "transparent.png"
+    )
+
+    results = cli.predict_directory(input_dir, FakePredictor())
+
+    assert results == [{"image_path": "transparent.png", "pred": 1.0}]
+
+
 def test_write_predictions_has_exact_schema(tmp_path) -> None:
     output_path = tmp_path / "nested" / "predictions.json"
     records = [{"image_path": "image.png", "pred": 0.25}]

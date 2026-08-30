@@ -13,6 +13,12 @@ import torch
 from PIL import Image
 from torch.utils.data import DataLoader
 
+from src.data.preprocessing import (
+    PREPROCESSING_CONTRACT_ID,
+    PREPROCESSING_METADATA_KEY,
+    build_image_preprocess,
+    normalize_pil_image,
+)
 from src.training.config import ExperimentConfig, load_config
 from src.training.engine import (
     EarlyStopping,
@@ -22,10 +28,6 @@ from src.training.engine import (
     seed_worker,
     set_global_seed,
 )
-
-
-_IMAGENET_MEAN = (0.485, 0.456, 0.406)
-_IMAGENET_STD = (0.229, 0.224, 0.225)
 
 
 class TrainingImageTransform:
@@ -38,20 +40,12 @@ class TrainingImageTransform:
         robust: bool,
         clean_probability: float,
     ) -> None:
-        from torchvision import transforms
-
         self.robust = robust
         self.clean_probability = clean_probability
-        self.preprocess = transforms.Compose(
-            [
-                transforms.Resize((image_size, image_size)),
-                transforms.ToTensor(),
-                transforms.Normalize(_IMAGENET_MEAN, _IMAGENET_STD),
-            ]
-        )
+        self.preprocess = build_image_preprocess(image_size)
 
     def __call__(self, image: Image.Image) -> torch.Tensor:
-        image = image.convert("RGB")
+        image = normalize_pil_image(image)
         if self.robust:
             from src.transforms.robustness import sample_training_transform
 
@@ -116,6 +110,23 @@ def _write_json(path: str | Path, payload: Any) -> None:
     temporary_path.replace(output_path)
 
 
+def _build_checkpoint_metadata(
+    config: ExperimentConfig,
+    early_stopping: EarlyStopping,
+) -> dict[str, str]:
+    """Return the weight-file metadata required for safe inference."""
+
+    return {
+        "architecture": "efficientnet_b0_binary",
+        "best_epoch": str(early_stopping.best_epoch),
+        "best_validation_loss": f"{early_stopping.best_loss:.10g}",
+        "image_size": str(config.data.image_size),
+        PREPROCESSING_METADATA_KEY: PREPROCESSING_CONTRACT_ID,
+        "robust_training": str(config.robustness.enabled).lower(),
+        "seed": str(config.seed),
+    }
+
+
 def train_from_config(
     config: ExperimentConfig,
     *,
@@ -176,14 +187,7 @@ def train_from_config(
             break
 
     early_stopping.restore(model)
-    checkpoint_metadata = {
-        "architecture": "efficientnet_b0_binary",
-        "best_epoch": str(early_stopping.best_epoch),
-        "best_validation_loss": f"{early_stopping.best_loss:.10g}",
-        "image_size": str(config.data.image_size),
-        "robust_training": str(config.robustness.enabled).lower(),
-        "seed": str(config.seed),
-    }
+    checkpoint_metadata = _build_checkpoint_metadata(config, early_stopping)
     checkpoint_path = Path(config.output.checkpoint_path)
     checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
     save_checkpoint(model, checkpoint_path, metadata=checkpoint_metadata)
@@ -191,6 +195,7 @@ def train_from_config(
     metadata: dict[str, Any] = {
         "schema_version": 1,
         "checkpoint_path": str(checkpoint_path),
+        PREPROCESSING_METADATA_KEY: PREPROCESSING_CONTRACT_ID,
         "device": str(device),
         "epochs_completed": len(history),
         "best_epoch": early_stopping.best_epoch,

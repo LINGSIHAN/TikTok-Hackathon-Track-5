@@ -8,7 +8,9 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
-from PIL import Image, ImageOps
+from PIL import Image
+
+from src.data.preprocessing import normalize_pil_image
 
 
 REQUIRED_COLUMNS = frozenset({"path", "label", "split"})
@@ -126,7 +128,7 @@ class ImageManifestDataset:
         try:
             with Image.open(image_path) as opened:
                 opened.load()
-                image = ImageOps.exif_transpose(opened).convert("RGB")
+                image = normalize_pil_image(opened)
         except OSError as error:
             raise OSError(f"Image could not be decoded: {image_path}") from error
 

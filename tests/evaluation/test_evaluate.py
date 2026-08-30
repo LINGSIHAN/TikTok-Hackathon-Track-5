@@ -3,22 +3,155 @@ import json
 
 import pytest
 import torch
+from PIL import Image
 from torch.utils.data import DataLoader, TensorDataset
 
+import src.models.checkpoints as checkpoints_module
+import src.models.efficientnet as efficientnet_module
+from src.data.preprocessing import (
+    PREPROCESSING_CONTRACT_ID,
+    PREPROCESSING_METADATA_KEY,
+)
+from src.evaluation import evaluate as evaluate_module
 from src.evaluation.evaluate import (
+    EvaluationImageTransform,
     Scenario,
     _manifest_paths,
     _write_json,
     _write_predictions,
     build_scenarios,
+    evaluate_checkpoint,
     predict_loader,
     summarize_scenarios,
 )
+from src.transforms import robustness
 
 
 class IdentityLogitModel(torch.nn.Module):
     def forward(self, inputs):
         return inputs[:, :1]
+
+
+def _patch_evaluation_checkpoint(monkeypatch, metadata) -> None:
+    monkeypatch.setattr(
+        efficientnet_module,
+        "build_model",
+        lambda **kwargs: IdentityLogitModel(),
+    )
+    monkeypatch.setattr(
+        checkpoints_module,
+        "load_checkpoint",
+        lambda model, path, device: metadata,
+    )
+
+
+def test_evaluator_accepts_current_preprocessing_metadata(monkeypatch, tmp_path):
+    metadata = {
+        PREPROCESSING_METADATA_KEY: PREPROCESSING_CONTRACT_ID,
+        "image_size": "224",
+    }
+    _patch_evaluation_checkpoint(monkeypatch, metadata)
+    manifest = tmp_path / "manifest.csv"
+    manifest.write_text("path,label,split\n", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="no samples"):
+        evaluate_checkpoint(
+            manifest_path=manifest,
+            checkpoint_path=tmp_path / "model.safetensors",
+            split="test",
+            output_dir=tmp_path / "output",
+            device_name="cpu",
+            image_size=224,
+        )
+
+
+@pytest.mark.parametrize(
+    ("metadata", "image_size", "message"),
+    [
+        ({"image_size": "224"}, 224, "legacy checkpoints must be retrained"),
+        (
+            {
+                PREPROCESSING_METADATA_KEY: "legacy-square-resize-v0",
+                "image_size": "224",
+            },
+            224,
+            "does not match",
+        ),
+        (
+            {
+                PREPROCESSING_METADATA_KEY: PREPROCESSING_CONTRACT_ID,
+                "image_size": "224",
+            },
+            256,
+            "requested image_size 256",
+        ),
+    ],
+)
+def test_evaluator_rejects_incompatible_preprocessing_metadata(
+    monkeypatch,
+    tmp_path,
+    metadata,
+    image_size,
+    message,
+):
+    _patch_evaluation_checkpoint(monkeypatch, metadata)
+
+    with pytest.raises(ValueError, match=message):
+        evaluate_checkpoint(
+            manifest_path=tmp_path / "not-reached.csv",
+            checkpoint_path=tmp_path / "model.safetensors",
+            split="test",
+            output_dir=tmp_path / "output",
+            device_name="cpu",
+            image_size=image_size,
+        )
+
+
+def test_evaluation_applies_scenario_before_shared_preprocess(monkeypatch):
+    events = []
+    expected = torch.zeros(3, 12, 12)
+
+    def fake_build_preprocess(image_size):
+        assert image_size == 12
+
+        def preprocess(image):
+            events.append(("preprocess", image.getpixel((0, 0))))
+            return expected
+
+        return preprocess
+
+    def fake_apply_transform(image, name, severity, seed):
+        events.append(
+            (
+                "robustness",
+                name,
+                severity,
+                isinstance(seed, int),
+                image.mode,
+                image.getpixel((0, 0)),
+            )
+        )
+        transformed = image.copy()
+        transformed.putpixel((0, 0), (0, 255, 0))
+        return transformed
+
+    monkeypatch.setattr(
+        evaluate_module,
+        "build_image_preprocess",
+        fake_build_preprocess,
+    )
+    monkeypatch.setattr(robustness, "apply_transform", fake_apply_transform)
+    transform = EvaluationImageTransform(12, Scenario("jpeg", 90), seed=7)
+
+    result = transform(
+        Image.new("RGBA", (40, 20), color=(0, 0, 255, 0))
+    )
+
+    assert result is expected
+    assert events == [
+        ("robustness", "jpeg", 90, True, "RGB", (255, 255, 255)),
+        ("preprocess", (0, 255, 0)),
+    ]
 
 
 def test_build_scenarios_is_clean_first_and_stable():

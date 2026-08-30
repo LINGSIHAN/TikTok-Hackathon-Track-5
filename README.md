@@ -22,6 +22,9 @@ provenance.
   under every configured edit and identifies the most destabilizing case.
 - Dataset preparation is balanced, duplicate-aware, source-grouped, and small
   enough for a free Kaggle GPU workflow.
+- A shared short-edge resize and center crop preserves aspect ratio across
+  training, evaluation, CLI inference, and Streamlit instead of stretching
+  differently shaped source images into a class-correlated shortcut.
 
 ## Zero-cost architecture
 
@@ -86,6 +89,10 @@ python scripts/prepare_sid_subset.py --total 6000 --seed 42
 ```
 
 Train the baseline and robustness-aware model:
+
+The two configurations use the same seed, data, trainable backbone block,
+optimizer settings, and epoch budget. Their only experimental difference is
+whether robustness transformations are sampled during training.
 
 ```bash
 python -m src.training.train --config configs/train_clean.yaml

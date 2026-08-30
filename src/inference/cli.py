@@ -11,6 +11,8 @@ from typing import TextIO
 
 from PIL import Image, UnidentifiedImageError
 
+from src.data.preprocessing import normalize_pil_image
+
 from .predictor import DEFAULT_CHECKPOINT_PATH, Predictor
 
 
@@ -66,7 +68,7 @@ def predict_directory(
         try:
             with Image.open(image_path) as opened:
                 opened.load()
-                image = opened.convert("RGB")
+                image = normalize_pil_image(opened)
         except (UnidentifiedImageError, OSError, ValueError) as error:
             print(
                 f"warning: skipping corrupt image '{relative_path}': {error}",

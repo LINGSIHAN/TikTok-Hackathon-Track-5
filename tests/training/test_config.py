@@ -1,8 +1,12 @@
 import json
+from pathlib import Path
 
 import pytest
 
 from src.training.config import ConfigError, config_from_mapping, load_config
+
+
+REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 
 
 def valid_config():
@@ -47,6 +51,30 @@ def test_load_json_config(tmp_path):
     assert config.seed == 42
     assert config.robustness.enabled is True
     assert config.data.batch_size == 8
+
+
+def _yaml_sections(path):
+    sections = {"root": []}
+    current = "root"
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if line and not line.startswith(" ") and line.endswith(":"):
+            current = line[:-1]
+            sections[current] = []
+        elif line.strip():
+            sections[current].append(line.strip())
+    return sections
+
+
+def test_clean_and_robust_experiments_are_controlled_comparisons():
+    clean = _yaml_sections(REPOSITORY_ROOT / "configs/train_clean.yaml")
+    robust = _yaml_sections(REPOSITORY_ROOT / "configs/train_robust.yaml")
+
+    assert set(clean) == set(robust)
+    for section in ("root", "data", "model", "training"):
+        assert clean[section] == robust[section]
+    assert clean["robustness"] == ["enabled: false", "clean_probability: 1.0"]
+    assert robust["robustness"] == ["enabled: true", "clean_probability: 0.35"]
+    assert clean["output"] != robust["output"]
 
 
 def test_unknown_key_is_rejected():
