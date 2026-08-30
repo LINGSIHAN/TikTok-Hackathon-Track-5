@@ -1,0 +1,26 @@
+# Training and inference
+torch>=2.7
+torchvision>=0.22
+timm>=1.0
+pillow>=10.4
+numpy>=2.0
+
+# Data preparation and experiment tracking
+datasets>=3.0
+huggingface_hub>=0.28
+kaggle>=1.7
+pandas>=2.2
+pyyaml>=6.0
+tqdm>=4.67
+
+# Required robustness transforms and evaluation
+albumentations>=1.4
+opencv-python-headless>=4.10
+scikit-learn>=1.5
+matplotlib>=3.9
+seaborn>=0.13
+
+# Local demo and validation
+streamlit>=1.40
+pytest>=8.3
+safetensors>=0.5
