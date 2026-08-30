@@ -1,0 +1,31 @@
+seed: 42
+
+data:
+  manifest_path: data/processed/manifest.csv
+  train_split: train
+  val_split: val
+  test_split: test
+  image_size: 224
+  batch_size: 64
+  num_workers: 2
+
+model:
+  pretrained: true
+  freeze_backbone: true
+  unfreeze_last_blocks: 1
+
+training:
+  epochs: 4
+  learning_rate: 0.0003
+  weight_decay: 0.0001
+  patience: 2
+  mixed_precision: true
+
+robustness:
+  enabled: true
+  clean_probability: 0.35
+
+output:
+  checkpoint_path: artifacts/checkpoints/model.safetensors
+  metadata_path: artifacts/checkpoints/model_metadata.json
+  history_path: artifacts/metrics/training_history.json

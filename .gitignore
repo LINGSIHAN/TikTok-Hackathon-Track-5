@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Notebooks and editors
+.ipynb_checkpoints/
+.vscode/
+.idea/
+
+# Secrets and local settings
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# Local datasets (keep only directory placeholders)
+data/raw/**
+!data/raw/**/
+!data/raw/**/.gitkeep
+data/processed/**
+!data/processed/.gitkeep
+
+# Training runs and temporary exports
+artifacts/runs/
+artifacts/checkpoints/*
+!artifacts/checkpoints/.gitkeep
+!artifacts/checkpoints/model.safetensors
+!artifacts/checkpoints/model_metadata.json
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
