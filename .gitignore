@@ -1,37 +1,44 @@
-# Python
+# Python environments and bytecode
+.venv/
+venv/
 __pycache__/
 *.py[cod]
 *.egg-info/
 .pytest_cache/
+.mypy_cache/
 .coverage
 htmlcov/
-.venv/
-venv/
 
 # Notebooks and editors
 .ipynb_checkpoints/
 .vscode/
 .idea/
 
-# Secrets and local settings
+# Secrets and local tooling
 .env
 .env.*
 !.env.example
 .streamlit/secrets.toml
+.kaggle/
 
-# Local datasets (keep only directory placeholders)
+# Local datasets (keep directory placeholders)
 data/raw/**
 !data/raw/**/
 !data/raw/**/.gitkeep
 data/processed/**
-!data/processed/.gitkeep
+!data/processed/**/
+!data/processed/**/.gitkeep
 
-# Training runs and temporary exports
+# Training runs and generated evaluation artifacts
 artifacts/runs/
 artifacts/checkpoints/*
 !artifacts/checkpoints/.gitkeep
 !artifacts/checkpoints/model.safetensors
 !artifacts/checkpoints/model_metadata.json
+artifacts/metrics/**
+artifacts/figures/**
+!artifacts/metrics/.gitkeep
+!artifacts/figures/.gitkeep
 *.log
 
 # OS files
