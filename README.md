@@ -76,6 +76,30 @@ full [`evaluation and error analysis`](docs/submission/error-analysis.md), the
 
 ![Controlled comparison of the clean-training baseline and robustness-trained model](artifacts/figures/model_comparison.png)
 
+### Post-lock external demonstration result
+
+After checkpoint and threshold lock, the clean WildFake demonstration run
+evaluated the exact 13,841-row organizer subset (4,998 COCO val2017 real and
+8,843 Advanced DALL-E 3 generated):
+
+| ROC-AUC | Average precision | Balanced accuracy | F1 | FPR | FNR | Brier score |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 0.8554 | 0.9175 | 0.7689 | 0.7630 | 0.1212 | 0.3409 | 0.1922 |
+
+At the unchanged `0.50` threshold, the confusion counts are 4,392 true
+negatives, 606 false positives, 3,015 false negatives, and 5,828 true
+positives. This is a demonstration on one external subset, not a universal
+performance claim. The byte-level audit found 1,808 same-label duplicate groups
+containing 5,124 additional file rows, leaving 8,717 unique content hashes;
+metrics retain every organizer row to preserve the exact requested subset and
+therefore do not represent 13,841 independent images.
+
+See the sanitized [`WildFake demonstration report`](docs/submission/wildfake-demo-report.md),
+[`aggregate JSON`](artifacts/metrics/wildfake_demo_summary.json), and
+[`clean-result figure`](artifacts/figures/wildfake_demo.png). WildFake was used
+only after model and threshold lock and never for training, threshold selection,
+or model selection.
+
 ## Repository layout
 
 ```text
@@ -133,6 +157,34 @@ python -m src.evaluation.evaluate \
   --output-dir artifacts/metrics
 ```
 
+### Post-lock WildFake demonstration benchmark
+
+The external benchmark is deliberately separate from training and internal
+model selection. Its downloader pins WildFake revision
+`18f53ff36ad9da60644039f0452b0e7b3907af6f`, verifies the two source metadata
+files, and retrieves only the contiguous ZIP ranges containing 4,998 COCO
+`val2017` images and 8,843 Advanced DALL-E 3 images. Original encoded image
+bytes are preserved.
+
+```bash
+python scripts/download_wildfake_demo.py
+python scripts/evaluate_wildfake_demo.py
+```
+
+The recommended command evaluates clean images only with the frozen checkpoint
+and fixed `0.50` threshold. The optional complete 20-scenario run is:
+
+```bash
+python scripts/evaluate_wildfake_demo.py --mode full
+```
+
+Local manifests, predictions, raw metrics, execution metadata, and all images
+remain ignored. A completed evaluation generates a sanitized aggregate JSON,
+Markdown report, and figure suitable for public evidence. The evaluator rejects
+changed checkpoint bytes, wrong class counts, duplicate or conflicting image
+hashes, corrupt images, and a dataset digest that differs from the downloader's
+verified manifest.
+
 For the intended free GPU run, upload
 [`notebooks/train_kaggle.ipynb`](notebooks/train_kaggle.ipynb) to Kaggle, enable
 a GPU and internet, and run all cells. The notebook validates both model runs,
@@ -180,9 +232,10 @@ The SID_Set dataset card lists CC BY 4.0 and documents labels 0 (real), 1 (full
 synthetic), and 2 (tampered). Full provenance, normalization, leakage controls,
 and attribution notes are in [`data/README.md`](data/README.md).
 
-The organizer-provided WildFake demonstration subset is reserved for final
-demonstration/evaluation. It must not be used for training, threshold selection,
-or model selection.
+The organizer-provided WildFake demonstration subset is reserved for post-lock
+demonstration/evaluation. It was not and must not be used for training,
+threshold selection, or model selection. See the exact immutable subset and
+audit rules in [`data/README.md`](data/README.md).
 
 ## Current verified status
 
@@ -197,7 +250,7 @@ or model selection.
   with zero discrepancy.
 - The Kaggle pipeline passed its CUDA checkpoint smoke test before packaging.
   The promoted checkpoint also passes local CPU loading/inference, the required
-  directory-to-JSON CLI, all 167 repository tests, and a headless Streamlit
+  directory-to-JSON CLI, the complete repository test suite, and a headless Streamlit
   health check. The remaining external gates are the public Streamlit
   deployment, two-image live smoke test, demo video, and final Devpost links.
 

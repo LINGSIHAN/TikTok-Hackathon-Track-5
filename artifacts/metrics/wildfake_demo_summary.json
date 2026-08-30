@@ -1,0 +1,64 @@
+{
+  "clean": {
+    "confusion": {
+      "class_normalized": {
+        "generated": {
+          "predicted_generated": 0.6590523577971277,
+          "predicted_real": 0.3409476422028723
+        },
+        "real": {
+          "predicted_generated": 0.1212484993997599,
+          "predicted_real": 0.8787515006002401
+        }
+      },
+      "raw": {
+        "false_negative": 3015,
+        "false_positive": 606,
+        "true_negative": 4392,
+        "true_positive": 5828
+      }
+    },
+    "metrics": {
+      "average_precision": 0.917487215698813,
+      "balanced_accuracy": 0.7689019291986838,
+      "brier_score": 0.1921658318317461,
+      "f1": 0.7629770242848727,
+      "false_negative_rate": 0.3409476422028723,
+      "false_positive_rate": 0.1212484993997599,
+      "roc_auc": 0.8553742428781984
+    },
+    "num_samples": 13841
+  },
+  "dataset": {
+    "class_counts": {
+      "generated": 8843,
+      "real": 4998
+    },
+    "class_provenance": {
+      "generated": "Advanced DALL-E 3 (IsAdvanced=1, IsFake=1)",
+      "real": "COCO val2017"
+    },
+    "dataset_digest": "28ff0e20c5bbe0ceb6e9ebb39c50c7594a3af89f3efd894227e8fd77687b790d",
+    "duplicate_content": {
+      "additional_files": 5124,
+      "conflicting_label_groups": 0,
+      "groups": 1808,
+      "policy": "same-label duplicates retained to preserve the exact organizer subset",
+      "unique_content_hashes": 8717
+    },
+    "evaluation_manifest_sha256": "eea96dc4cb271a7874c1c4935d183a431f8295e2376e6499db751cb7ee2abe8a",
+    "name": "WildFake",
+    "repository": "https://www.modelscope.cn/datasets/hy2628982280/WildFake",
+    "revision": "18f53ff36ad9da60644039f0452b0e7b3907af6f",
+    "total_count": 13841
+  },
+  "disclaimer": "WildFake was evaluated only after the model checkpoint and 0.50 threshold were locked. It is demonstration-only and was never used for training, threshold selection, or model selection.",
+  "model": {
+    "checkpoint_sha256": "806fbabc5ecae8394369d08738cbf0c993568137d323a8133167e4557d04eed2",
+    "decision_threshold": 0.5
+  },
+  "scenario_count": 1,
+  "scenario_mode": "clean",
+  "schema_version": 1,
+  "scope": "post-lock demonstration-only external evaluation"
+}

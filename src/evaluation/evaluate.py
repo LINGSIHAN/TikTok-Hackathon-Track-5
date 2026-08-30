@@ -234,6 +234,8 @@ def evaluate_checkpoint(
     checkpoint_path: str | Path,
     split: str,
     output_dir: str | Path,
+    root_dir: str | Path | None = None,
+    scenario_mode: str = "full",
     batch_size: int = 32,
     num_workers: int = 0,
     device_name: str = "auto",
@@ -241,7 +243,12 @@ def evaluate_checkpoint(
     threshold: float = 0.5,
     seed: int = 42,
 ) -> dict[str, Any]:
-    """Run clean plus complete robustness-grid evaluation and write artifacts."""
+    """Run clean or complete robustness-grid evaluation and write artifacts.
+
+    ``root_dir`` and ``scenario_mode`` are optional so existing training and
+    evaluation callers retain their original path resolution and full-grid
+    behavior.
+    """
 
     if batch_size <= 0:
         raise ValueError("batch_size must be greater than zero")
@@ -249,6 +256,8 @@ def evaluate_checkpoint(
         raise ValueError("num_workers must be non-negative")
     if image_size <= 0:
         raise ValueError("image_size must be greater than zero")
+    if scenario_mode not in {"clean", "full"}:
+        raise ValueError("scenario_mode must be either 'clean' or 'full'")
 
     from src.data.dataset import ImageManifestDataset
     from src.models.checkpoints import load_checkpoint
@@ -270,7 +279,11 @@ def evaluate_checkpoint(
         raise ValueError(f"Manifest contains no samples for split '{split}'")
     output_path = Path(output_dir)
     generator = torch.Generator().manual_seed(seed)
-    scenarios = build_scenarios(TRANSFORM_GRID)
+    scenarios = (
+        [Scenario("clean", None)]
+        if scenario_mode == "clean"
+        else build_scenarios(TRANSFORM_GRID)
+    )
     scenario_results: list[dict[str, Any]] = []
     prediction_rows: list[dict[str, Any]] = []
 
@@ -283,6 +296,7 @@ def evaluate_checkpoint(
                 scenario,
                 seed=seed,
             ),
+            root_dir=root_dir,
         )
         loader = DataLoader(
             dataset,
@@ -322,6 +336,7 @@ def evaluate_checkpoint(
     artifact = {
         "schema_version": 1,
         "split": split,
+        "scenario_mode": scenario_mode,
         "threshold": threshold,
         "seed": seed,
         "checkpoint": str(checkpoint_path),
@@ -343,6 +358,16 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--checkpoint", required=True, help="Model .safetensors file")
     parser.add_argument("--split", default="test", help="Manifest split to evaluate")
     parser.add_argument("--output-dir", required=True, help="Artifact output directory")
+    parser.add_argument(
+        "--root-dir",
+        help="Optional root used to resolve relative manifest image paths",
+    )
+    parser.add_argument(
+        "--mode",
+        choices=("clean", "full"),
+        default="full",
+        help="Evaluate clean only or the complete published transform grid",
+    )
     parser.add_argument("--batch-size", type=int, default=32)
     parser.add_argument("--num-workers", type=int, default=0)
     parser.add_argument("--device", default="auto")
@@ -359,6 +384,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         checkpoint_path=args.checkpoint,
         split=args.split,
         output_dir=args.output_dir,
+        root_dir=args.root_dir,
+        scenario_mode=args.mode,
         batch_size=args.batch_size,
         num_workers=args.num_workers,
         device_name=args.device,

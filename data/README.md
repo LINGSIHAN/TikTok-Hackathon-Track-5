@@ -45,3 +45,39 @@ evaluated dataset and scope explicitly.
 
 The generated manifest summary is the authoritative record of the counts from
 the actual run. Do not replace it with estimated numbers in the submission.
+
+## WildFake post-lock demonstration subset
+
+WildFake is an external, demonstration-only benchmark. It is never an input to
+training, checkpoint selection, early stopping, calibration, or threshold
+selection. The model checkpoint and `0.50` decision threshold were frozen before
+this data was downloaded.
+
+The exact subset is pinned to ModelScope revision
+`18f53ff36ad9da60644039f0452b0e7b3907af6f` and contains:
+
+- 4,998 authentic images selected by `/val2017/` from `real_coco.csv`;
+- 8,843 generated images selected with `IsAdvanced=1` and `IsFake=1` from
+  `dalle3.csv`.
+
+The downloader verifies the metadata SHA-256 values, remotely inspects the ZIP
+central directories, and downloads only one contiguous byte range from each
+large archive. Every extracted file must pass local-header, compression, size,
+CRC-32, image-decode, and destination-containment checks. The original encoded
+bytes are not resized or recompressed.
+
+```bash
+python scripts/download_wildfake_demo.py
+python scripts/evaluate_wildfake_demo.py
+```
+
+`data/external/wildfake_demo/` contains the ignored source images, immutable
+metadata copies, aggregate download manifest, and deterministic all-test
+evaluation manifest. The public repository contains aggregate evidence only;
+it never contains WildFake images or per-image external predictions.
+
+The completed byte-level audit retained all exact organizer rows and found
+1,808 same-label duplicate-content groups (5,124 additional rows), for 8,717
+unique content hashes. No hash appeared with conflicting labels. Aggregate
+metrics therefore weight the exact row set, including its disclosed repeated
+content, rather than treating all 13,841 rows as statistically independent.

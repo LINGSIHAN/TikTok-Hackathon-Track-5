@@ -236,3 +236,75 @@ def test_manifest_filter_and_artifact_writers(tmp_path):
     metrics_path = tmp_path / "metrics.json"
     _write_json(metrics_path, {"undefined": float("nan")})
     assert json.loads(metrics_path.read_text(encoding="utf-8")) == {"undefined": None}
+
+
+def test_evaluator_clean_mode_resolves_images_from_external_root(
+    monkeypatch, tmp_path
+):
+    metadata = {
+        PREPROCESSING_METADATA_KEY: PREPROCESSING_CONTRACT_ID,
+        "image_size": "224",
+    }
+    _patch_evaluation_checkpoint(monkeypatch, metadata)
+    monkeypatch.setattr(
+        evaluate_module,
+        "build_image_preprocess",
+        lambda image_size: (
+            lambda image: torch.tensor(
+                [-2.0 if image.getpixel((0, 0))[0] < 128 else 2.0]
+            )
+        ),
+    )
+    image_root = tmp_path / "external"
+    image_root.mkdir()
+    Image.new("RGB", (4, 4), "black").save(image_root / "real.png")
+    Image.new("RGB", (4, 4), "white").save(image_root / "generated.png")
+    manifest = tmp_path / "audit" / "manifest.csv"
+    manifest.parent.mkdir()
+    manifest.write_text(
+        "path,label,split\nreal.png,0,test\ngenerated.png,1,test\n",
+        encoding="utf-8",
+    )
+
+    result = evaluate_checkpoint(
+        manifest_path=manifest,
+        checkpoint_path=tmp_path / "model.safetensors",
+        split="test",
+        output_dir=tmp_path / "output",
+        root_dir=image_root,
+        scenario_mode="clean",
+        device_name="cpu",
+        image_size=224,
+    )
+
+    assert result["scenario_mode"] == "clean"
+    assert len(result["scenarios"]) == 1
+    assert result["scenarios"][0]["transform"] == "clean"
+    assert result["scenarios"][0]["metrics"]["roc_auc"] == pytest.approx(1.0)
+
+    monkeypatch.setattr(robustness, "TRANSFORM_GRID", {"jpeg": (90,)})
+    full_result = evaluate_checkpoint(
+        manifest_path=manifest,
+        checkpoint_path=tmp_path / "model.safetensors",
+        split="test",
+        output_dir=tmp_path / "full-output",
+        root_dir=image_root,
+        scenario_mode="full",
+        device_name="cpu",
+        image_size=224,
+    )
+    assert [scenario["transform"] for scenario in full_result["scenarios"]] == [
+        "clean",
+        "jpeg",
+    ]
+
+
+def test_evaluator_rejects_unknown_scenario_mode(tmp_path):
+    with pytest.raises(ValueError, match="scenario_mode"):
+        evaluate_checkpoint(
+            manifest_path=tmp_path / "manifest.csv",
+            checkpoint_path=tmp_path / "model.safetensors",
+            split="test",
+            output_dir=tmp_path / "output",
+            scenario_mode="tuned",
+        )

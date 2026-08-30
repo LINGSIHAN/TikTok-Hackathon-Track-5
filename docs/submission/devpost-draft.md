@@ -38,6 +38,9 @@ robustness-trained model on the same held-out source groups.
 - Source-grouped splitting by SID `img_id`, normalized-image deduplication, and
   the same JPEG normalization for both classes to reduce leakage and shortcuts
 - Deterministic evaluation across the published transformation grid
+- A post-lock WildFake demonstration benchmark that selectively retrieves the
+  exact COCO val2017 and Advanced DALL-E 3 organizer subset, verifies every
+  source byte, and keeps raw external data out of Git
 - Streamlit for the optional live demonstration
 - Kaggle's free GPU notebook environment for training
 - Codex for collaborative implementation/review and GitHub for version control
@@ -45,6 +48,11 @@ robustness-trained model on the same held-out source groups.
 SID_Set is listed as CC BY 4.0 on its dataset card. The pinned run retained
 3,000 images per class, split into 4,800 training, 600 validation, and 600 test
 images with equal class counts in every split.
+
+WildFake was reserved until after the final checkpoint and `0.50` threshold
+were locked. It was never used for training, threshold selection, or model
+selection; its result is reported only as a demonstration on one external
+subset.
 
 ## Results
 
@@ -59,6 +67,15 @@ the hardest Gaussian-noise setting, robust training improves balanced accuracy
 from 84.67% to 89.00% and reduces the false-negative rate from 30.67% to
 21.67%. The complete figures and methodology are linked in the repository's
 evaluation and error-analysis note.
+
+On the post-lock WildFake demonstration subset, the frozen model reaches
+0.8554 ROC-AUC, 0.9175 average precision, 76.89% balanced accuracy, and 0.7630
+F1 on clean images. Its false-positive rate is 12.12% and false-negative rate is
+34.09%. This result covers the exact 4,998 COCO val2017 real and 8,843 Advanced
+DALL-E 3 generated organizer rows. A byte-level audit found 1,808 same-label
+duplicate groups and 8,717 unique content hashes; metrics retain all organizer
+rows, so this is not a sample of 13,841 independent images. We present it as a
+transparent external demonstration, not universal detector performance.
 
 ## Challenges and lessons
 
@@ -80,6 +97,8 @@ evaluation and error-analysis note.
 - The confidence is evidence from one detector, not proof of image provenance.
 - The same-source SID_Set test does not establish performance on unseen
   generators or real social-platform distributions.
+- The external WildFake row set contains repeated same-label image bytes, and
+  its DALL-E 3/COCO composition covers only one generated and one real source.
 
 ## What we would improve with more time
 

@@ -23,6 +23,8 @@ htmlcov/
 
 # Local datasets (keep directory placeholders)
 data/raw/**
+data/external/**
+*.range.part
 !data/raw/**/
 !data/raw/**/.gitkeep
 data/processed/**
@@ -47,6 +49,7 @@ artifacts/figures/**
 !artifacts/metrics/training_history.json
 !artifacts/metrics/run_context.json
 !artifacts/metrics/pip_freeze.txt
+!artifacts/metrics/wildfake_demo_summary.json
 !artifacts/metrics/clean_baseline/
 !artifacts/metrics/clean_baseline/metrics.json
 !artifacts/metrics/clean_baseline/predictions.csv
@@ -54,6 +57,7 @@ artifacts/figures/**
 !artifacts/figures/error_analysis.png
 !artifacts/figures/confusion_matrix.png
 !artifacts/figures/model_comparison.png
+!artifacts/figures/wildfake_demo.png
 *.log
 
 # OS files

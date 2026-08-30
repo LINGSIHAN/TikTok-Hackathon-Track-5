@@ -44,3 +44,15 @@
 - [x] The organizer WildFake demonstration subset was not used for training.
 - [x] It was not used for threshold selection or model selection.
 - [x] No repeated manifest source ID or normalized-image hash crosses splits.
+
+## WildFake external demonstration evidence
+
+- [x] The downloader pins the immutable WildFake revision and metadata hashes.
+- [x] Selective HTTP ranges require valid `206 Content-Range` responses and can resume.
+- [x] Extraction verifies local headers, CRC-32, size, decoding, and safe paths.
+- [x] All 4,998 COCO val2017 and 8,843 Advanced DALL-E 3 images are verified locally.
+- [x] The frozen checkpoint hash is verified immediately before evaluation.
+- [x] Clean metrics are generated at the unchanged `0.50` threshold.
+- [x] Same-label duplicate content is disclosed; conflicting labels fail closed.
+- [x] Public evidence contains only aggregate metrics and no local paths.
+- [x] Git contains no external images, range files, local manifests, or raw predictions.
