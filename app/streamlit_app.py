@@ -109,7 +109,7 @@ def _show_inference_error(action: str, error: Exception) -> None:
 def _load_transform_suite() -> tuple[
     Any | None, list[tuple[str, str]], str | None
 ]:
-    """Preflight the future teammate transform module before showing its action."""
+    """Preflight the transform module before enabling the stress-test action."""
 
     try:
         module = importlib.import_module("src.transforms.robustness")

@@ -11,7 +11,7 @@ def valid_config():
         "data": {
             "manifest_path": "data/processed/manifest.csv",
             "train_split": "train",
-            "val_split": "validation",
+            "val_split": "val",
             "test_split": "test",
             "image_size": 224,
             "batch_size": 8,

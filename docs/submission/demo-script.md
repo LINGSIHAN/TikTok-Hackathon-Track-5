@@ -11,7 +11,8 @@ social-media image.
 ## 2. Solution overview (20 seconds)
 
 Show the repository and explain the lightweight EfficientNet-B0 detector, the
-balanced SID_Set subset, and the clean-versus-transformed evaluation protocol.
+balanced/source-grouped SID_Set subset, and the comparison between clean-only
+and robustness-aware training on the same held-out images.
 
 ## 3. Single-image prediction (30 seconds)
 
@@ -27,8 +28,8 @@ severity, while the UI keeps the interactive view concise.
 ## 5. Batch contract and evidence (30 seconds)
 
 Show the directory inference command and resulting JSON containing `image_path`
-and `pred`. Then show the clean-versus-transformed figure and one representative
-false positive and false negative.
+and `pred`. Then show the baseline-versus-robust clean/transformed figure and one
+representative false positive and false negative from the exported predictions.
 
 ## 6. Limitations and close (20 seconds)
 

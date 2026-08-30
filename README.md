@@ -1,81 +1,99 @@
-# Robust Detection of AI-Generated Images
+# RealityCheck — Robust AI-Generated Image Detection
 
-Hackathon-scale prototype for classifying an image as authentic or AI-generated
-while measuring how stable that prediction remains after common social-media
-transformations.
+RealityCheck is a hackathon-scale image classifier that estimates whether an
+image is AI-generated and measures whether that score remains stable after
+ordinary social-media transformations. It treats robustness as a first-class
+result rather than reporting clean-image accuracy alone.
 
-## Scope
+The prototype uses an ImageNet-pretrained EfficientNet-B0 binary classifier
+(well below the 2-billion-parameter limit), deterministic transformation tests,
+and a CPU-friendly Streamlit demo. It is a screening aid—not proof of image
+provenance.
 
-The project targets image-level binary classification and robustness to:
+## What makes the project useful
 
-- JPEG compression
-- Gaussian blur
-- downscale then upscale
-- Gaussian noise
-- brightness, contrast, and saturation changes
-- center cropping
+- One required batch command emits an AIGC confidence for every image.
+- The complete challenge grid covers JPEG compression, blur, rescaling, noise,
+  brightness/contrast/saturation jitter, and center cropping.
+- A clean baseline and robustness-trained model are evaluated on the same held-
+  out images, revealing whether augmentation improves stability rather than only
+  clean performance.
+- The interactive **robustness passport** shows how one upload's score changes
+  under every configured edit and identifies the most destabilizing case.
+- Dataset preparation is balanced, duplicate-aware, source-grouped, and small
+  enough for a free Kaggle GPU workflow.
 
-The prototype intentionally excludes video/audio moderation and production-scale
-deployment. The complete detector uses EfficientNet-B0, far below the 2-billion
-parameter limit.
+## Zero-cost architecture
 
-## Zero-cost build path
+```text
+Hugging Face SID_Set stream
+        │  6,000 selected images (labels 0 and 1 only)
+        ▼
+grouped train / val / test manifest
+        │
+        ├── clean EfficientNet-B0 baseline
+        └── robustness-trained EfficientNet-B0 ──► final .safetensors checkpoint
+                                                    │
+                 full clean + transform evaluation ◄┘
+                                                    │
+                        CLI JSON + Streamlit CPU demo
+```
 
-- Train on a free Kaggle GPU using a balanced 6,000-10,000 image subset of
-  `saberzl/SID_Set`.
-- Use only SID labels `0` (authentic) and `1` (fully synthetic); label `2`
-  (tampered) is excluded from this binary prototype.
-- Keep the organizer-provided WildFake demonstration subset isolated from
-  training, threshold selection, and model selection.
-- Deploy the final CPU-sized model on Streamlit Community Cloud.
-- Record the required public demo video locally as the reliable fallback.
+- Training/evaluation: Kaggle Notebook with its free GPU quota.
+- Demo hosting: Streamlit Community Cloud free tier.
+- Data: streamed from the public
+  [`saberzl/SID_Set`](https://huggingface.co/datasets/saberzl/SID_Set) dataset;
+  the script stops once the requested balanced subset is complete instead of
+  downloading the full 140 GB collection.
+- No paid API, database, storage service, or inference endpoint is required.
+
+Free services can impose quotas, sleep when idle, or change availability. The
+local demo and recorded video remain the reliable submission fallback.
 
 ## Repository layout
 
 ```text
-app/                  Streamlit demo
+app/                  Streamlit robustness-passport demo
 configs/              Clean and robustness-training configurations
-data/                 Local runtime data (images are ignored by Git)
-notebooks/            Kaggle runner notebook
-scripts/              Dataset preparation helpers
-src/data/             Manifest and dataset loading
-src/transforms/       Deterministic robustness transformations
-src/models/           EfficientNet-B0 detector
-src/training/         Training loop and checkpoint export
-src/evaluation/       Metrics, robustness grid, and figures
+data/                 Provenance docs and ignored runtime images/manifests
+notebooks/            Fail-closed Kaggle training/evaluation notebook
+scripts/              Dataset and presentation helpers
+src/data/             Validated manifest-backed dataset
+src/transforms/       Deterministic challenge transformation grid
+src/models/           EfficientNet-B0 detector and safe checkpoint helpers
+src/training/         Config-driven training and early stopping
+src/evaluation/       Metrics, complete robustness evaluation, and plot
 src/inference/        Predictor API and required directory-to-JSON CLI
-tests/                Scoped automated tests
-artifacts/            Final checkpoint, metrics, and presentation figures
+tests/                Unit and contract tests
+artifacts/            Selected checkpoint and compact public evidence
 ```
 
-## Planned commands
+## Reproduce the workflow
 
-Install runtime dependencies:
-
-```bash
-python -m pip install -r requirements.txt
-```
-
-Install training and test dependencies:
+Create an environment and install the training dependencies (platform-specific
+activation commands are in [`SETUP.md`](SETUP.md)):
 
 ```bash
 python -m pip install -r requirements-train.txt
 ```
 
-Prepare the balanced SID subset:
+Stream a balanced 6,000-image subset and create `train`, `val`, and `test`
+splits. Labels are 0 (real) and 1 (fully synthetic); SID label 2 (tampered) is
+excluded.
 
 ```bash
-python scripts/prepare_sid_subset.py --total 10000 --seed 42
+python scripts/prepare_sid_subset.py --total 6000 --seed 42
 ```
 
-Train the clean baseline and robustness-aware model:
+Train the baseline and robustness-aware model:
 
 ```bash
 python -m src.training.train --config configs/train_clean.yaml
 python -m src.training.train --config configs/train_robust.yaml
 ```
 
-Evaluate the final checkpoint:
+Evaluate the selected checkpoint on clean images and every published transform
+severity:
 
 ```bash
 python -m src.evaluation.evaluate \
@@ -85,7 +103,15 @@ python -m src.evaluation.evaluate \
   --output-dir artifacts/metrics
 ```
 
-Run the required directory inference interface:
+For the intended free GPU run, upload
+[`notebooks/train_kaggle.ipynb`](notebooks/train_kaggle.ipynb) to Kaggle, enable
+a GPU and internet, and run all cells. The notebook validates both model runs,
+the metrics, and a checkpoint inference before creating `hackathon_export.zip`.
+Extract that ZIP into the repository root; `.gitignore` exposes only the compact
+final checkpoint, manifest/provenance, metrics, predictions, and plots that are
+useful for the public submission. Raw images and intermediate runs stay ignored.
+
+## Required batch inference
 
 ```bash
 python -m src.inference.cli \
@@ -94,22 +120,52 @@ python -m src.inference.cli \
   --checkpoint artifacts/checkpoints/model.safetensors
 ```
 
-The output is a JSON array whose records contain exactly:
+The output is a deterministically ordered JSON array whose records contain
+exactly:
 
 ```json
 {"image_path": "path/to/image.png", "pred": 0.8732}
 ```
 
-`pred` is the estimated probability that the image is AI-generated.
+`pred` is the model's estimated probability that the image is AI-generated.
 
-Launch the local demo:
+## Run and host the demo
+
+After placing the trained checkpoint at
+`artifacts/checkpoints/model.safetensors`:
 
 ```bash
+python -m pip install -r requirements.txt
 streamlit run app/streamlit_app.py
 ```
 
-## Current status
+For Streamlit Community Cloud, select this GitHub repository and set the app
+entrypoint to `app/streamlit_app.py`. No secrets are required. Confirm the
+public URL with both an authentic and generated test image before recording the
+demo; deployment is not considered verified until that smoke test passes.
 
-Implementation is in progress. Results, reproducibility details, error analysis,
-limitations, and team contributions will be added only after measured runs are
-available; this repository does not fabricate benchmark values.
+## Data isolation and provenance
+
+The SID_Set dataset card lists CC BY 4.0 and documents labels 0 (real), 1 (full
+synthetic), and 2 (tampered). Full provenance, normalization, leakage controls,
+and attribution notes are in [`data/README.md`](data/README.md).
+
+The organizer-provided WildFake demonstration subset is reserved for final
+demonstration/evaluation. It must not be used for training, threshold selection,
+or model selection.
+
+## Current verified status
+
+- Core training, inference, transformation, evaluation, and Streamlit code is
+  integrated.
+- The data pipeline passes a direct synthetic-fixture smoke test for exact class
+  balance, deterministic splits, source isolation, RGB loading, and manifest
+  safety.
+- The final Kaggle training run has **not** happened yet. Consequently, no
+  checkpoint, accuracy claim, robustness result, public Streamlit URL, or error
+  analysis is claimed here.
+- The next gate is the complete Kaggle notebook run; measured artifacts then
+  feed the README results, error analysis, Devpost write-up, and demo video.
+
+See [`docs/submission/requirements-checklist.md`](docs/submission/requirements-checklist.md)
+for the remaining evidence and submission gates.

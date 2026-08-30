@@ -28,6 +28,8 @@ data/raw/**
 data/processed/**
 !data/processed/**/
 !data/processed/**/.gitkeep
+!data/processed/manifest.csv
+!data/processed/manifest_summary.json
 
 # Training runs and generated evaluation artifacts
 artifacts/runs/
@@ -39,6 +41,17 @@ artifacts/metrics/**
 artifacts/figures/**
 !artifacts/metrics/.gitkeep
 !artifacts/figures/.gitkeep
+!artifacts/metrics/metrics.json
+!artifacts/metrics/predictions.csv
+!artifacts/metrics/robustness.png
+!artifacts/metrics/training_history.json
+!artifacts/metrics/run_context.json
+!artifacts/metrics/clean_baseline/
+!artifacts/metrics/clean_baseline/metrics.json
+!artifacts/metrics/clean_baseline/predictions.csv
+!artifacts/metrics/clean_baseline/robustness.png
+!artifacts/figures/error_analysis.png
+!artifacts/figures/confusion_matrix.png
 *.log
 
 # OS files
