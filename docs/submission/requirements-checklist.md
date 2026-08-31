@@ -66,11 +66,12 @@
 - [x] Warm-start loading happens before optimizer construction and cannot overwrite v1.
 - [x] The evaluator requires all 20 scenarios, fixed threshold `0.50`, exact test counts, and finite metrics.
 - [x] The export separates local audit artifacts from sanitized public evidence and never auto-promotes v2.
-- [x] The real Kaggle run has produced `genimage_v2_export.zip`.
-- [x] The v1-versus-v2 GenImage and SID results have been reviewed for deployment.
+- [x] The real Kaggle run produced and validated `genimage_v2_export.zip`.
+- [x] The v1-versus-v2 GenImage and SID results were reviewed for deployment.
 - [x] Accepted v2 numerical claims were copied from the validated public summary.
-- [x] v1 remains deployed because v2 materially increased SID false positives at threshold `0.50`.
 - [x] The calibration policy minimizes SID validation false positives under predeclared SID-recall and GenImage guardrails.
 - [x] The calibration runner performs validation inference only and cannot retrain the checkpoint.
 - [x] The numeric selector used validation predictions only and was not changed after the exploratory test re-score.
-- [x] v2 failed four deployment gates, so no checkpoint, threshold, or application promotion was made; v1 remains deployed at `0.50`.
+- [x] v2 failed four deployment gates; the failed-gate recommendation remains disclosed.
+- [x] The project owner subsequently directed a manual v2 Streamlit deployment at the original `0.50` threshold and accepted the documented false-positive trade-off.
+- [x] The application explicitly loads the separately named v2 checkpoint, preserves v1 for rollback, and records checkpoint lineage.

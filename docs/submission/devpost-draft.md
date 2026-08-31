@@ -50,7 +50,9 @@ frozen model using only SID training rows plus a balanced subset of Unbiased
 Tiny GenImage. It holds out GenImage validation/test data, compares v1 and v2 on
 both GenImage and SID across the same 20 scenarios, and never reads WildFake.
 The exported comparison and validation-only calibration were reviewed; v2
-failed the deployment gates, so the application remains on v1.
+failed the deployment gates. The project owner subsequently selected v2 at the
+original `0.50` threshold for the broader-generator Streamlit demonstration,
+accepting the documented false-positive trade-off and retaining v1 for rollback.
 
 SID_Set is listed as CC BY 4.0 on its dataset card. The pinned run retained
 3,000 images per class, split into 4,800 training, 600 validation, and 600 test
@@ -95,7 +97,7 @@ safety gates, we kept v1 rather than optimizing the story around the new model.
 | Clean baseline | 0.997056 | 0.995635 | Gaussian noise / 0.10 | 0.986133 | 0.010922 |
 | Robustness-trained | 0.996400 | 0.995784 | Gaussian noise / 0.10 | 0.990278 | 0.006122 |
 
-At the fixed 0.50 threshold, the selected model reaches 96.33% clean balanced
+At the fixed 0.50 threshold, the frozen v1 baseline reaches 96.33% clean balanced
 accuracy, with a 4.67% false-positive rate and 2.67% false-negative rate. Under
 the hardest Gaussian-noise setting, robust training improves balanced accuracy
 from 84.67% to 89.00% and reduces the false-negative rate from 30.67% to
@@ -111,16 +113,19 @@ duplicate groups and 8,717 unique content hashes; metrics retain all organizer
 rows, so this is not a sample of 13,841 independent images. We present it as a
 transparent external demonstration, not universal detector performance.
 
-The review-gated GenImage v2 run completed, but we deliberately did not deploy
-it. On the held-out 1,120-image GenImage test at threshold 0.50, v2 improves
+The review-gated GenImage v2 run completed. On the held-out 1,120-image
+GenImage test at threshold 0.50, v2 improves
 ROC-AUC from 0.6032 to 0.8633 and balanced accuracy from 55.80% to 75.80%.
 However, its SID false-positive rate rises from 4.67% to 18.67%. We then ran one
 predeclared validation-only calibration with no retraining. The locked threshold
 of 0.40042864 still produced a 24.67% exploratory SID false-positive rate and
-failed four of eight deployment gates. We therefore retained the safer v1 model
-at 0.50 rather than hiding the trade-off or tuning again on observed tests.
-Because the calibration policy followed the earlier 0.50 test review, this
-saved test re-score is exploratory rather than a fresh holdout.
+failed four of eight deployment gates. Because the calibration followed the
+earlier 0.50 test review, that saved test re-score is exploratory rather than a
+fresh holdout. After reviewing the failed-gate recommendation, the project
+owner selected v2 at the original 0.50 threshold for the broader-generator
+Streamlit demonstration. We disclose this manual choice and its false-positive
+trade-off, make no claim that v2 passed the deployment gates, and retain v1 as
+the rollback baseline.
 
 ## Challenges and lessons
 

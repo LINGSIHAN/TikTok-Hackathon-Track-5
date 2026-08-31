@@ -85,11 +85,12 @@ and reviewed aggregate evidence may be committed. WildFake is neither read nor
 used anywhere in this workflow.
 
 The completed T4 run is recorded by
-`processed/genimage_v2_manifest_summary.json`. Its candidate checkpoint was not
-promoted: held-out GenImage generalization improved substantially, but SID
-false positives increased at the fixed 0.50 threshold. A subsequent
-validation-only calibration also failed four deployment gates and retained v1
-at `0.50`. Aggregate evidence is published under
+`processed/genimage_v2_manifest_summary.json`. Held-out GenImage generalization
+improved substantially, but SID false positives increased at the fixed 0.50
+threshold. A subsequent validation-only calibration failed four deployment
+gates and recommended retaining v1. The project owner later selected v2 at the
+original `0.50` threshold for the Streamlit demonstration, accepting that
+documented trade-off and retaining v1 for rollback. Aggregate evidence is published under
 `artifacts/metrics/genimage_v2_summary.json` and
 `artifacts/metrics/genimage_v2_calibration.json`; per-image predictions remain
 in ignored local audit exports.

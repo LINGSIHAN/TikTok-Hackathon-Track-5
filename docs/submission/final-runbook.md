@@ -12,17 +12,21 @@ observed SID and GenImage tests exactly once. Four of eight deployment gates
 failed: SID false-positive rate, clean balanced accuracy, mean transformed
 balanced accuracy, and worst transformed balanced accuracy.
 
-The final decision is **retain v1 at threshold `0.50`**. Do not rerun
-calibration, retrain, or promote the v2 checkpoint. Reviewed aggregate evidence
-is in [`genimage_v2_calibration.json`](../../artifacts/metrics/genimage_v2_calibration.json)
+The calibration recommendation was **retain v1 at threshold `0.50`**. Do not
+rerun calibration or retrain. After reviewing that failed-gate recommendation,
+the project owner explicitly selected v2 at its original evaluated threshold
+`0.50` for the broader-generator Streamlit demonstration on 2026-09-01. This is
+a manual product decision, not a claim that v2 passed the gates. V1 remains the
+rollback checkpoint. Reviewed aggregate evidence is in
+[`genimage_v2_calibration.json`](../../artifacts/metrics/genimage_v2_calibration.json)
 and [`genimage-v2-calibration-report.md`](genimage-v2-calibration-report.md).
 
 ## 1. Verify and deploy
 
-Local release verification passed: 253 tests passed (one platform-specific
-symlink test skipped), the real v1 checkpoint completed CPU inference, the
-required directory-to-JSON command produced valid output, and the Streamlit
-entrypoint loaded without exceptions. Then:
+Release verification passed: 256 tests passed, the tracked v2 checkpoint with
+SHA-256 `b45022d9dab2a02300934c239eee24dd40ef8e402f24c1f27fc2d63a46117c12`
+completed CPU inference, and the Streamlit entrypoint loaded without
+exceptions. Then:
 
 1. Push the reviewed final commit to `master`.
 2. In Streamlit Community Cloud, deploy or reboot:

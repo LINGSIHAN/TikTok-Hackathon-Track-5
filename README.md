@@ -193,7 +193,7 @@ Extract that ZIP into the repository root; `.gitignore` exposes only the compact
 final checkpoint, manifest/provenance, metrics, predictions, and plots that are
 useful for the public submission. Raw images and intermediate runs stay ignored.
 
-### GenImage v2 candidate workflow
+### GenImage v2 training and promotion workflow
 
 The separate
 [`train_genimage_v2_kaggle.ipynb`](notebooks/train_genimage_v2_kaggle.ipynb)
@@ -216,10 +216,9 @@ both held-out tests under all 20 scenarios, and creates:
 
 The export contains `local_audit/` (checkpoint, manifests, predictions, raw
 metrics, hashes, and environment) and `public/` (sanitized JSON, Markdown, and
-figure). The workflow never auto-promotes v2. Manual review and
-validation-only calibration subsequently rejected the candidate, so the
-application continues to load `artifacts/checkpoints/model.safetensors`. The
-completed comparison is recorded in the
+figure). The workflow never auto-promotes v2. Manual review and validation-only
+calibration recommended retaining v1 because v2 failed four of eight
+predeclared deployment gates. The completed comparison is recorded in the
 [`aggregate summary`](artifacts/metrics/genimage_v2_summary.json),
 [`review report`](docs/submission/genimage-v2-report.md), and
 [`comparison figure`](artifacts/figures/genimage_v2_comparison.png). Full run
@@ -236,9 +235,12 @@ not presented as a fresh unbiased holdout.
 
 The single predeclared calibration run is complete. It locked threshold
 `0.40042864`, but the exploratory SID test false-positive rate was still
-24.67%, and four of eight deployment gates failed. Therefore v2 was rejected;
-the application remains on v1 at `0.50`, and no second tuning attempt is
-permitted. The reviewed outputs are the
+24.67%, and four of eight deployment gates failed. No second tuning attempt is
+permitted. After reviewing that recommendation, the project owner explicitly
+selected v2 at the original evaluated threshold `0.50` for the broader-generator
+Streamlit demonstration on 2026-09-01, accepting and disclosing its higher SID
+false-positive rate. V1 remains the rollback baseline. The reviewed outputs are
+the
 [`aggregate calibration evidence`](artifacts/metrics/genimage_v2_calibration.json)
 and [`calibration report`](docs/submission/genimage-v2-calibration-report.md).
 The completed decision and remaining deadline steps are recorded in
@@ -250,7 +252,7 @@ The completed decision and remaining deadline steps are recorded in
 python -m src.inference.cli \
   --input path/to/images \
   --output predictions.json \
-  --checkpoint artifacts/checkpoints/model.safetensors
+  --checkpoint artifacts/checkpoints/model_v2.safetensors
 ```
 
 The output is a deterministically ordered JSON array whose records contain
@@ -264,8 +266,10 @@ exactly:
 
 ## Run and host the demo
 
-After placing the trained checkpoint at
-`artifacts/checkpoints/model.safetensors`:
+The reviewed Streamlit deployment uses
+`artifacts/checkpoints/model_v2.safetensors` by default. The frozen v1 file
+remains at `artifacts/checkpoints/model.safetensors` for rollback and historical
+evaluation.
 
 ```bash
 python -m pip install -r requirements.txt
@@ -288,12 +292,13 @@ demonstration/evaluation. It was not and must not be used for training,
 threshold selection, or model selection. See the exact immutable subset and
 audit rules in [`data/README.md`](data/README.md).
 
-The optional v2 candidate uses Unbiased Tiny GenImage version 1 only after an
-explicit licence confirmation. Its prepared data and detailed manifests stay
-ignored, and WildFake is excluded from the workflow. Validation-only
-calibration could not reduce the candidate's SID false-positive rate below the
-5% deployment gate without breaking the predeclared cross-dataset safeguards.
-The candidate was rejected, so v1 remains the deployed checkpoint at `0.50`.
+The v2 model uses Unbiased Tiny GenImage version 1 only after an explicit
+licence confirmation. Its prepared data and detailed manifests stay ignored,
+and WildFake was excluded from training and model selection. Validation-only
+calibration did not meet the predeclared false-positive gate; that result
+remains published even though the project owner subsequently selected v2 for
+the Streamlit demonstration. Only the reviewed checkpoint and compact lineage
+metadata are tracked for deployment.
 
 ## Current verified status
 
@@ -307,20 +312,25 @@ The candidate was rejected, so v1 remains the deployed checkpoint at `0.50`.
   cover all 20 scenarios and all exported metrics were independently recomputed
   with zero discrepancy.
 - The Kaggle pipeline passed its CUDA checkpoint smoke test before packaging.
-  The deployed v1 checkpoint also passes local CPU loading/inference, the
+  The retained v1 checkpoint also passes local CPU loading/inference, the
   required directory-to-JSON CLI, the complete repository test suite, and a
   headless Streamlit health check. The remaining external gates are a
   fresh-environment setup check, verified contributor details, public Streamlit
   deployment, two-image live smoke test, demo video, and final Devpost links.
 - The GenImage v2 Kaggle run completed against commit `34cc2fb`. All archive,
   checkpoint-lineage, manifest, prediction, and metric hashes passed independent
-  validation. At threshold `0.50`, v2 substantially improved GenImage but raised
-  SID false positives from 4.67% to 18.67%.
+  validation. Its checkpoint SHA-256 is
+  `b45022d9dab2a02300934c239eee24dd40ef8e402f24c1f27fc2d63a46117c12`.
+  At threshold `0.50`, clean GenImage ROC-AUC improved from 0.6032 to 0.8633
+  and balanced accuracy from 55.80% to 75.80%, while SID false positives rose
+  from 4.67% to 18.67%.
 - The separate validation-only calibration completed against commit `2de9d2b`
   and locked threshold `0.40042864` without retraining. Its exploratory SID test
   false-positive rate was 24.67%, balanced accuracy was 87.17%, and SID
   transformed mean/worst balanced accuracy was 88.18%/82.67%. Four of eight
-  deployment gates failed, so the reviewed decision is to retain v1 at `0.50`.
+  deployment gates failed. The recommendation remains part of the evidence;
+  the project owner later directed a transparent v2 demo deployment at `0.50`,
+  with v1 preserved for rollback.
 
 See [`docs/submission/requirements-checklist.md`](docs/submission/requirements-checklist.md)
 for the remaining evidence and submission gates.

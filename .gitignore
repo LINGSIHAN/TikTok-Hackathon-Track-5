@@ -40,6 +40,7 @@ artifacts/checkpoints/*
 !artifacts/checkpoints/.gitkeep
 !artifacts/checkpoints/model.safetensors
 !artifacts/checkpoints/model_metadata.json
+!artifacts/checkpoints/model_v2.safetensors
 !artifacts/checkpoints/model_v2_metadata.json
 artifacts/metrics/**
 artifacts/figures/**

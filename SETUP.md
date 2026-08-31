@@ -106,8 +106,10 @@ accelerator availability are controlled by Kaggle.
 ## Kaggle GenImage v2 candidate run
 
 Use [`notebooks/train_genimage_v2_kaggle.ipynb`](notebooks/train_genimage_v2_kaggle.ipynb)
-for the separate warm-start experiment. This run does not replace the v1
-checkpoint and does not use WildFake.
+for the separate warm-start experiment. The run never replaces v1
+automatically and does not use WildFake. The completed run was reviewed and v2
+was manually selected for the Streamlit demo on 2026-09-01; v1 remains present
+as the rollback baseline.
 
 1. Push the implementation to GitHub, then import the v2 notebook into Kaggle.
 2. In **Settings**, select a T4 GPU and enable Internet.
@@ -148,6 +150,7 @@ python -m pytest
 streamlit run app/streamlit_app.py
 ```
 
-Without `artifacts/checkpoints/model.safetensors`, the Streamlit interface loads
-but deliberately disables predictions. Use local CPU work for tests and the
-demo; run the full training notebook on Kaggle's GPU.
+Without `artifacts/checkpoints/model_v2.safetensors`, the Streamlit interface
+loads but deliberately disables predictions. Set `AIGC_CHECKPOINT_PATH` only
+when intentionally testing another checkpoint. Use local CPU work for tests and
+the demo; run the full training notebook on Kaggle's GPU.

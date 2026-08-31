@@ -33,7 +33,6 @@ from app.ui_logic import (
 )
 from src.data.preprocessing import normalize_pil_image
 from src.inference.predictor import (
-    DEFAULT_CHECKPOINT_PATH,
     Predictor,
     prepare_stress_image,
 )
@@ -43,6 +42,8 @@ MAX_UPLOAD_BYTES = 10 * 1024 * 1024
 MAX_IMAGE_PIXELS = 25_000_000
 MAX_IMAGE_EDGE = 8192
 MAX_ASPECT_RATIO = 8.0
+DEPLOYED_CHECKPOINT_PATH = Path("artifacts/checkpoints/model_v2.safetensors")
+DEPLOYED_MODEL_LABEL = "GenImage v2"
 LOGGER = logging.getLogger(__name__)
 
 
@@ -64,7 +65,7 @@ def load_predictor(checkpoint_path: str, checkpoint_version: int) -> Predictor:
 
 def _checkpoint_path() -> Path:
     configured = os.environ.get("AIGC_CHECKPOINT_PATH")
-    path = Path(configured) if configured else DEFAULT_CHECKPOINT_PATH
+    path = Path(configured) if configured else DEPLOYED_CHECKPOINT_PATH
     return path if path.is_absolute() else REPOSITORY_ROOT / path
 
 
@@ -414,7 +415,10 @@ def main() -> None:
             "to stay within free hosting limits."
         )
         if checkpoint_ready:
-            st.success("Model checkpoint available")
+            if checkpoint.name == DEPLOYED_CHECKPOINT_PATH.name:
+                st.success(f"Model checkpoint available · {DEPLOYED_MODEL_LABEL}")
+            else:
+                st.success("Custom model checkpoint available")
         else:
             st.warning("Model checkpoint not deployed")
         st.divider()
