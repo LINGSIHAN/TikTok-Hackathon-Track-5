@@ -31,8 +31,9 @@ Show the directory inference command and resulting JSON containing `image_path`
 and `pred`. Then show `artifacts/figures/model_comparison.png` and the error-count
 figures. Briefly show the GenImage v2 calibration decision: the threshold was
 locked on validation data to minimize SID false positives under recall and
-cross-generator safeguards, and v2 was deployed only if every held-out gate
-passed. The public repository records representative false-positive and
+cross-generator safeguards, but v2 failed four deployment gates and the safer
+v1 model remained active at threshold 0.50. The public repository records
+representative false-positive and
 false-negative identifiers and scores but not their raw pixels. Show those two
 images only if they have been reacquired from the pinned SID_Set revision under
 its license; otherwise show the identifiers and state that limitation.

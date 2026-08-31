@@ -49,8 +49,8 @@ We also built a separate, review-gated v2 workflow that warm-starts from the
 frozen model using only SID training rows plus a balanced subset of Unbiased
 Tiny GenImage. It holds out GenImage validation/test data, compares v1 and v2 on
 both GenImage and SID across the same 20 scenarios, and never reads WildFake.
-The application remains on v1 unless that exported comparison is reviewed and
-accepted.
+The exported comparison and validation-only calibration were reviewed; v2
+failed the deployment gates, so the application remains on v1.
 
 SID_Set is listed as CC BY 4.0 on its dataset card. The pinned run retained
 3,000 images per class, split into 4,800 training, 600 validation, and 600 test
@@ -60,6 +60,33 @@ WildFake was reserved until after the final checkpoint and `0.50` threshold
 were locked. It was never used for training, threshold selection, or model
 selection; its result is reported only as a demonstration on one external
 subset.
+
+## How we used AI and Codex
+
+RealityCheck's AI capability is its locally hosted EfficientNet-B0 image
+classifier. It produces an AIGC probability for each image, while deterministic
+computer-vision transforms probe whether that probability remains stable after
+real-world edits. The live demo does not call a paid inference API; it runs the
+frozen checkpoint on CPU.
+
+Codex served as an engineering and review collaborator. We used it to divide
+merge-safe team tasks, implement and test the data, transformation, inference,
+evaluation, and Streamlit layers, troubleshoot Kaggle and Streamlit deployment,
+and independently replay exported metrics and lineage hashes. The team retained
+the final decision authority: when the v2 candidate failed the predeclared
+safety gates, we kept v1 rather than optimizing the story around the new model.
+
+## How to test it
+
+1. Install `requirements.txt` and run `streamlit run app/streamlit_app.py`.
+2. Upload a JPG or PNG and select **Analyze image** to view its AIGC score.
+3. Select **Run robustness stress test** to display the robustness passport and
+   compare the clean score with representative compression, blur, resize,
+   noise, color, and crop edits.
+4. Run the documented directory inference command and confirm the JSON output
+   contains only `image_path` and `pred` for each file.
+5. For the automated suite, install `requirements-train.txt`, then run
+   `python -m pytest -q`.
 
 ## Results
 
@@ -85,12 +112,15 @@ rows, so this is not a sample of 13,841 independent images. We present it as a
 transparent external demonstration, not universal detector performance.
 
 The review-gated GenImage v2 run completed, but we deliberately did not deploy
-it. On the held-out 1,120-image GenImage test, v2 improves ROC-AUC from 0.6032
-to 0.8633 and balanced accuracy from 55.80% to 75.80%. On the 600-image SID
-regression test, however, balanced accuracy falls from 96.33% to 90.00% and
-false-positive rate rises from 4.67% to 18.67%. We retained v1 as the model of
-record rather than hiding that trade-off or selecting a new threshold on test
-data; v2 requires calibration using validation data only before reconsideration.
+it. On the held-out 1,120-image GenImage test at threshold 0.50, v2 improves
+ROC-AUC from 0.6032 to 0.8633 and balanced accuracy from 55.80% to 75.80%.
+However, its SID false-positive rate rises from 4.67% to 18.67%. We then ran one
+predeclared validation-only calibration with no retraining. The locked threshold
+of 0.40042864 still produced a 24.67% exploratory SID false-positive rate and
+failed four of eight deployment gates. We therefore retained the safer v1 model
+at 0.50 rather than hiding the trade-off or tuning again on observed tests.
+Because the calibration policy followed the earlier 0.50 test review, this
+saved test re-score is exploratory rather than a fresh holdout.
 
 ## Challenges and lessons
 
@@ -132,6 +162,14 @@ data; v2 requires calibration using validation data only before reconsideration.
 - GitHub: <https://github.com/LINGSIHAN/TikTok-Hackathon-Track-5>
 - Live Streamlit demo: TBD after deployment and smoke testing
 - Public demo video: TBD after recording
+
+## Screenshot shot list
+
+1. Streamlit landing page showing **Model checkpoint available**.
+2. Authentic-image result with its probability and interpretation.
+3. Generated-image result with its probability and interpretation.
+4. Robustness passport chart and most destabilizing transformation.
+5. Model-comparison figure beside the honest retain-v1 calibration decision.
 
 ## Team contributions
 

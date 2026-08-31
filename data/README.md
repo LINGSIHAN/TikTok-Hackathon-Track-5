@@ -87,9 +87,12 @@ used anywhere in this workflow.
 The completed T4 run is recorded by
 `processed/genimage_v2_manifest_summary.json`. Its candidate checkpoint was not
 promoted: held-out GenImage generalization improved substantially, but SID
-false positives increased at the fixed 0.50 threshold. Aggregate evidence is
-published under `artifacts/metrics/genimage_v2_summary.json`; per-image
-predictions remain in the ignored local audit export.
+false positives increased at the fixed 0.50 threshold. A subsequent
+validation-only calibration also failed four deployment gates and retained v1
+at `0.50`. Aggregate evidence is published under
+`artifacts/metrics/genimage_v2_summary.json` and
+`artifacts/metrics/genimage_v2_calibration.json`; per-image predictions remain
+in ignored local audit exports.
 
 ## WildFake post-lock demonstration subset
 

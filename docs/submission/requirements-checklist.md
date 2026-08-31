@@ -37,7 +37,8 @@
 - [ ] A public YouTube demo video is available.
 - [ ] The YouTube link is included in Devpost.
 - [x] Development tools, model, libraries, and datasets are named.
-- [ ] GitHub and optional live-demo URLs are included.
+- [x] The GitHub URL is included.
+- [ ] The live-demo URL is included.
 
 ## Data isolation
 
@@ -71,5 +72,5 @@
 - [x] v1 remains deployed because v2 materially increased SID false positives at threshold `0.50`.
 - [x] The calibration policy minimizes SID validation false positives under predeclared SID-recall and GenImage guardrails.
 - [x] The calibration runner performs validation inference only and cannot retrain the checkpoint.
-- [ ] The validation-only Kaggle calibration export has been reviewed without retuning from held-out results.
-- [ ] If v2 is promoted, the application change and checkpoint lineage have received a separate review.
+- [x] The numeric selector used validation predictions only and was not changed after the exploratory test re-score.
+- [x] v2 failed four deployment gates, so no checkpoint, threshold, or application promotion was made; v1 remains deployed at `0.50`.

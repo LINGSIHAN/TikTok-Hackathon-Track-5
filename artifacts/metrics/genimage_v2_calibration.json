@@ -1,0 +1,1136 @@
+{
+  "exploratory_test_rescore": {
+    "genimage": {
+      "clean": {
+        "average_precision": 0.8700666116245324,
+        "balanced_accuracy": 0.7910714285714286,
+        "brier_score": 0.16865956681334207,
+        "f1": 0.7664670658682635,
+        "false_negative_rate": 0.3142857142857143,
+        "false_negatives": 176,
+        "false_positive_rate": 0.10357142857142858,
+        "false_positive_rate_wilson_95_descriptive": [
+          0.08097715013284726,
+          0.1315674525137003
+        ],
+        "false_positives": 58,
+        "negatives": 560,
+        "positives": 560,
+        "recall": 0.6857142857142857,
+        "roc_auc": 0.863265306122449,
+        "samples": 1120,
+        "specificity": 0.8964285714285715,
+        "threshold": 0.4004286378622055,
+        "true_negatives": 502,
+        "true_positives": 384
+      },
+      "mean_transformed_balanced_accuracy": 0.7846334586466166,
+      "scenarios": [
+        {
+          "metrics": {
+            "average_precision": 0.8700666116245324,
+            "balanced_accuracy": 0.7910714285714286,
+            "brier_score": 0.16865956681334207,
+            "f1": 0.7664670658682635,
+            "false_negative_rate": 0.3142857142857143,
+            "false_negatives": 176,
+            "false_positive_rate": 0.10357142857142858,
+            "false_positives": 58,
+            "negatives": 560,
+            "positives": 560,
+            "recall": 0.6857142857142857,
+            "roc_auc": 0.863265306122449,
+            "samples": 1120,
+            "specificity": 0.8964285714285715,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 502,
+            "true_positives": 384
+          },
+          "severity": "",
+          "transform": "clean"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.8785610772406884,
+            "balanced_accuracy": 0.8035714285714286,
+            "brier_score": 0.15985868582679663,
+            "f1": 0.7838899803536346,
+            "false_negative_rate": 0.2875,
+            "false_negatives": 161,
+            "false_positive_rate": 0.10535714285714286,
+            "false_positives": 59,
+            "negatives": 560,
+            "positives": 560,
+            "recall": 0.7125,
+            "roc_auc": 0.8761128826530612,
+            "samples": 1120,
+            "specificity": 0.8946428571428572,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 501,
+            "true_positives": 399
+          },
+          "severity": "90",
+          "transform": "jpeg"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.8779366131712834,
+            "balanced_accuracy": 0.8205357142857144,
+            "brier_score": 0.14903437189194974,
+            "f1": 0.8109125117591721,
+            "false_negative_rate": 0.23035714285714284,
+            "false_negatives": 129,
+            "false_positive_rate": 0.12857142857142856,
+            "false_positives": 72,
+            "negatives": 560,
+            "positives": 560,
+            "recall": 0.7696428571428572,
+            "roc_auc": 0.8806058673469388,
+            "samples": 1120,
+            "specificity": 0.8714285714285714,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 488,
+            "true_positives": 431
+          },
+          "severity": "70",
+          "transform": "jpeg"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.8614214318743427,
+            "balanced_accuracy": 0.80625,
+            "brier_score": 0.15347559218747747,
+            "f1": 0.800734618916437,
+            "false_negative_rate": 0.22142857142857142,
+            "false_negatives": 124,
+            "false_positive_rate": 0.16607142857142856,
+            "false_positives": 93,
+            "negatives": 560,
+            "positives": 560,
+            "recall": 0.7785714285714286,
+            "roc_auc": 0.8678061224489796,
+            "samples": 1120,
+            "specificity": 0.8339285714285715,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 467,
+            "true_positives": 436
+          },
+          "severity": "50",
+          "transform": "jpeg"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.8509417848243042,
+            "balanced_accuracy": 0.7857142857142857,
+            "brier_score": 0.15683413516299066,
+            "f1": 0.7841726618705036,
+            "false_negative_rate": 0.22142857142857142,
+            "false_negatives": 124,
+            "false_positive_rate": 0.20714285714285716,
+            "false_positives": 116,
+            "negatives": 560,
+            "positives": 560,
+            "recall": 0.7785714285714286,
+            "roc_auc": 0.8573596938775511,
+            "samples": 1120,
+            "specificity": 0.7928571428571428,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 444,
+            "true_positives": 436
+          },
+          "severity": "30",
+          "transform": "jpeg"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.8730604519865277,
+            "balanced_accuracy": 0.8035714285714286,
+            "brier_score": 0.16205027925926155,
+            "f1": 0.7847358121330724,
+            "false_negative_rate": 0.2839285714285714,
+            "false_negatives": 159,
+            "false_positive_rate": 0.10892857142857143,
+            "false_positives": 61,
+            "negatives": 560,
+            "positives": 560,
+            "recall": 0.7160714285714286,
+            "roc_auc": 0.869968112244898,
+            "samples": 1120,
+            "specificity": 0.8910714285714285,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 499,
+            "true_positives": 401
+          },
+          "severity": "0.5",
+          "transform": "gaussian_blur"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.8714775025485457,
+            "balanced_accuracy": 0.8098214285714286,
+            "brier_score": 0.15034191178504916,
+            "f1": 0.8014911463187325,
+            "false_negative_rate": 0.23214285714285715,
+            "false_negatives": 130,
+            "false_positive_rate": 0.14821428571428572,
+            "false_positives": 83,
+            "negatives": 560,
+            "positives": 560,
+            "recall": 0.7678571428571428,
+            "roc_auc": 0.874515306122449,
+            "samples": 1120,
+            "specificity": 0.8517857142857143,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 477,
+            "true_positives": 430
+          },
+          "severity": "1.0",
+          "transform": "gaussian_blur"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.8632379597742588,
+            "balanced_accuracy": 0.7651785714285715,
+            "brier_score": 0.14870772057440867,
+            "f1": 0.7930763178599528,
+            "false_negative_rate": 0.1,
+            "false_negatives": 56,
+            "false_positive_rate": 0.36964285714285716,
+            "false_positives": 207,
+            "negatives": 560,
+            "positives": 560,
+            "recall": 0.9,
+            "roc_auc": 0.871686862244898,
+            "samples": 1120,
+            "specificity": 0.6303571428571428,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 353,
+            "true_positives": 504
+          },
+          "severity": "2.0",
+          "transform": "gaussian_blur"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.8871702653218244,
+            "balanced_accuracy": 0.8116071428571429,
+            "brier_score": 0.14931641104596838,
+            "f1": 0.7973102785782901,
+            "false_negative_rate": 0.25892857142857145,
+            "false_negatives": 145,
+            "false_positive_rate": 0.11785714285714285,
+            "false_positives": 66,
+            "negatives": 560,
+            "positives": 560,
+            "recall": 0.7410714285714286,
+            "roc_auc": 0.8849202806122449,
+            "samples": 1120,
+            "specificity": 0.8821428571428571,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 494,
+            "true_positives": 415
+          },
+          "severity": "0.5",
+          "transform": "resize"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.8938612074472324,
+            "balanced_accuracy": 0.8223214285714286,
+            "brier_score": 0.12505731484821977,
+            "f1": 0.8348547717842324,
+            "false_negative_rate": 0.10178571428571428,
+            "false_negatives": 57,
+            "false_positive_rate": 0.25357142857142856,
+            "false_positives": 142,
+            "negatives": 560,
+            "positives": 560,
+            "recall": 0.8982142857142857,
+            "roc_auc": 0.9017570153061224,
+            "samples": 1120,
+            "specificity": 0.7464285714285714,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 418,
+            "true_positives": 503
+          },
+          "severity": "0.25",
+          "transform": "resize"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.8266961677001659,
+            "balanced_accuracy": 0.71875,
+            "brier_score": 0.2159502861313425,
+            "f1": 0.6519337016574586,
+            "false_negative_rate": 0.4732142857142857,
+            "false_negatives": 265,
+            "false_positive_rate": 0.08928571428571429,
+            "false_positives": 50,
+            "negatives": 560,
+            "positives": 560,
+            "recall": 0.5267857142857143,
+            "roc_auc": 0.8107174744897959,
+            "samples": 1120,
+            "specificity": 0.9107142857142857,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 510,
+            "true_positives": 295
+          },
+          "severity": "0.02",
+          "transform": "gaussian_noise"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.8209177635030168,
+            "balanced_accuracy": 0.7017857142857142,
+            "brier_score": 0.2277298376283896,
+            "f1": 0.6204545454545455,
+            "false_negative_rate": 0.5125,
+            "false_negatives": 287,
+            "false_positive_rate": 0.08392857142857142,
+            "false_positives": 47,
+            "negatives": 560,
+            "positives": 560,
+            "recall": 0.48750000000000004,
+            "roc_auc": 0.8077455357142858,
+            "samples": 1120,
+            "specificity": 0.9160714285714285,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 513,
+            "true_positives": 273
+          },
+          "severity": "0.05",
+          "transform": "gaussian_noise"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.8777759754757244,
+            "balanced_accuracy": 0.7803571428571429,
+            "brier_score": 0.1713942603557564,
+            "f1": 0.7510121457489879,
+            "false_negative_rate": 0.3375,
+            "false_negatives": 189,
+            "false_positive_rate": 0.10178571428571428,
+            "false_positives": 57,
+            "negatives": 560,
+            "positives": 560,
+            "recall": 0.6625,
+            "roc_auc": 0.8957366071428572,
+            "samples": 1120,
+            "specificity": 0.8982142857142857,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 503,
+            "true_positives": 371
+          },
+          "severity": "0.1",
+          "transform": "gaussian_noise"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.8560829337002763,
+            "balanced_accuracy": 0.76875,
+            "brier_score": 0.18206384053624836,
+            "f1": 0.7354443309499489,
+            "false_negative_rate": 0.35714285714285715,
+            "false_negatives": 200,
+            "false_positive_rate": 0.10535714285714286,
+            "false_positives": 59,
+            "negatives": 560,
+            "positives": 560,
+            "recall": 0.6428571428571428,
+            "roc_auc": 0.8516007653061225,
+            "samples": 1120,
+            "specificity": 0.8946428571428572,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 501,
+            "true_positives": 360
+          },
+          "severity": "-0.2",
+          "transform": "brightness"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.871435694498987,
+            "balanced_accuracy": 0.7866071428571428,
+            "brier_score": 0.16881746594731106,
+            "f1": 0.7602808425275828,
+            "false_negative_rate": 0.32321428571428573,
+            "false_negatives": 181,
+            "false_positive_rate": 0.10357142857142858,
+            "false_positives": 58,
+            "negatives": 560,
+            "positives": 560,
+            "recall": 0.6767857142857143,
+            "roc_auc": 0.8583163265306123,
+            "samples": 1120,
+            "specificity": 0.8964285714285715,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 502,
+            "true_positives": 379
+          },
+          "severity": "0.2",
+          "transform": "brightness"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.8584655158399854,
+            "balanced_accuracy": 0.7633928571428572,
+            "brier_score": 0.18472500620267382,
+            "f1": 0.7259565667011375,
+            "false_negative_rate": 0.3732142857142857,
+            "false_negatives": 209,
+            "false_positive_rate": 0.1,
+            "false_positives": 56,
+            "negatives": 560,
+            "positives": 560,
+            "recall": 0.6267857142857143,
+            "roc_auc": 0.8537531887755102,
+            "samples": 1120,
+            "specificity": 0.9,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 504,
+            "true_positives": 351
+          },
+          "severity": "-0.2",
+          "transform": "contrast"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.867239513463596,
+            "balanced_accuracy": 0.7919642857142857,
+            "brier_score": 0.16719133352339496,
+            "f1": 0.769990128331688,
+            "false_negative_rate": 0.30357142857142855,
+            "false_negatives": 170,
+            "false_positive_rate": 0.1125,
+            "false_positives": 63,
+            "negatives": 560,
+            "positives": 560,
+            "recall": 0.6964285714285714,
+            "roc_auc": 0.8597257653061224,
+            "samples": 1120,
+            "specificity": 0.8875,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 497,
+            "true_positives": 390
+          },
+          "severity": "0.2",
+          "transform": "contrast"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.8695934699840863,
+            "balanced_accuracy": 0.7910714285714286,
+            "brier_score": 0.1711152583999005,
+            "f1": 0.766,
+            "false_negative_rate": 0.31607142857142856,
+            "false_negatives": 177,
+            "false_positive_rate": 0.10178571428571428,
+            "false_positives": 57,
+            "negatives": 560,
+            "positives": 560,
+            "recall": 0.6839285714285714,
+            "roc_auc": 0.8628826530612245,
+            "samples": 1120,
+            "specificity": 0.8982142857142857,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 503,
+            "true_positives": 383
+          },
+          "severity": "-0.2",
+          "transform": "saturation"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.8678621656677759,
+            "balanced_accuracy": 0.7955357142857142,
+            "brier_score": 0.16859354763183168,
+            "f1": 0.7734915924826904,
+            "false_negative_rate": 0.30178571428571427,
+            "false_negatives": 169,
+            "false_positive_rate": 0.10714285714285714,
+            "false_positives": 60,
+            "negatives": 560,
+            "positives": 560,
+            "recall": 0.6982142857142857,
+            "roc_auc": 0.8606505102040817,
+            "samples": 1120,
+            "specificity": 0.8928571428571429,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 500,
+            "true_positives": 391
+          },
+          "severity": "0.2",
+          "transform": "saturation"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.871288513625847,
+            "balanced_accuracy": 0.78125,
+            "brier_score": 0.17222878527977248,
+            "f1": 0.7542627883650953,
+            "false_negative_rate": 0.32857142857142857,
+            "false_negatives": 184,
+            "false_positive_rate": 0.10892857142857143,
+            "false_positives": 61,
+            "negatives": 560,
+            "positives": 560,
+            "recall": 0.6714285714285715,
+            "roc_auc": 0.86203125,
+            "samples": 1120,
+            "specificity": 0.8910714285714285,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 499,
+            "true_positives": 376
+          },
+          "severity": "0.8",
+          "transform": "center_crop"
+        }
+      ],
+      "worst_transformed_balanced_accuracy": 0.7017857142857142
+    },
+    "inputs": {
+      "genimage": {
+        "rows": 22400,
+        "scenario_count": 20,
+        "sha256": "225c780a4c03a1f57e067cbafe4df19583a60991a75edf5c1fbfc1d2c5f0b1ea"
+      },
+      "sid": {
+        "rows": 12000,
+        "scenario_count": 20,
+        "sha256": "c5aea34b33d15871a6bca2a7f617a198f1617389dfc7e1cf11ecb94002d99283"
+      }
+    },
+    "sid": {
+      "clean": {
+        "average_precision": 0.9940433284413847,
+        "balanced_accuracy": 0.8716666666666666,
+        "brier_score": 0.0657652152385269,
+        "f1": 0.8852459016393442,
+        "false_negative_rate": 0.01,
+        "false_negatives": 3,
+        "false_positive_rate": 0.24666666666666667,
+        "false_positive_rate_wilson_95_descriptive": [
+          0.20129380271657715,
+          0.2984453027038595
+        ],
+        "false_positives": 74,
+        "negatives": 300,
+        "positives": 300,
+        "recall": 0.99,
+        "roc_auc": 0.9931,
+        "samples": 600,
+        "specificity": 0.7533333333333333,
+        "threshold": 0.4004286378622055,
+        "true_negatives": 226,
+        "true_positives": 297
+      },
+      "mean_transformed_balanced_accuracy": 0.8818421052631579,
+      "scenarios": [
+        {
+          "metrics": {
+            "average_precision": 0.9940433284413847,
+            "balanced_accuracy": 0.8716666666666666,
+            "brier_score": 0.0657652152385269,
+            "f1": 0.8852459016393442,
+            "false_negative_rate": 0.01,
+            "false_negatives": 3,
+            "false_positive_rate": 0.24666666666666667,
+            "false_positives": 74,
+            "negatives": 300,
+            "positives": 300,
+            "recall": 0.99,
+            "roc_auc": 0.9931,
+            "samples": 600,
+            "specificity": 0.7533333333333333,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 226,
+            "true_positives": 297
+          },
+          "severity": "",
+          "transform": "clean"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.9933858264938488,
+            "balanced_accuracy": 0.8683333333333334,
+            "brier_score": 0.06903389016072287,
+            "f1": 0.8826151560178306,
+            "false_negative_rate": 0.01,
+            "false_negatives": 3,
+            "false_positive_rate": 0.25333333333333335,
+            "false_positives": 76,
+            "negatives": 300,
+            "positives": 300,
+            "recall": 0.99,
+            "roc_auc": 0.9924222222222222,
+            "samples": 600,
+            "specificity": 0.7466666666666666,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 224,
+            "true_positives": 297
+          },
+          "severity": "90",
+          "transform": "jpeg"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.9941260139519759,
+            "balanced_accuracy": 0.8833333333333333,
+            "brier_score": 0.05609250107196774,
+            "f1": 0.8942598187311178,
+            "false_negative_rate": 0.013333333333333334,
+            "false_negatives": 4,
+            "false_positive_rate": 0.22,
+            "false_positives": 66,
+            "negatives": 300,
+            "positives": 300,
+            "recall": 0.9866666666666667,
+            "roc_auc": 0.9931888888888889,
+            "samples": 600,
+            "specificity": 0.78,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 234,
+            "true_positives": 296
+          },
+          "severity": "70",
+          "transform": "jpeg"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.9933267986957524,
+            "balanced_accuracy": 0.885,
+            "brier_score": 0.058695374483629464,
+            "f1": 0.8956127080181543,
+            "false_negative_rate": 0.013333333333333334,
+            "false_negatives": 4,
+            "false_positive_rate": 0.21666666666666667,
+            "false_positives": 65,
+            "negatives": 300,
+            "positives": 300,
+            "recall": 0.9866666666666667,
+            "roc_auc": 0.9922,
+            "samples": 600,
+            "specificity": 0.7833333333333333,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 235,
+            "true_positives": 296
+          },
+          "severity": "50",
+          "transform": "jpeg"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.9894956991369491,
+            "balanced_accuracy": 0.845,
+            "brier_score": 0.08504300596523125,
+            "f1": 0.8642335766423358,
+            "false_negative_rate": 0.013333333333333334,
+            "false_negatives": 4,
+            "false_positive_rate": 0.2966666666666667,
+            "false_positives": 89,
+            "negatives": 300,
+            "positives": 300,
+            "recall": 0.9866666666666667,
+            "roc_auc": 0.9876111111111111,
+            "samples": 600,
+            "specificity": 0.7033333333333334,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 211,
+            "true_positives": 296
+          },
+          "severity": "30",
+          "transform": "jpeg"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.993840438461909,
+            "balanced_accuracy": 0.87,
+            "brier_score": 0.06610277919593009,
+            "f1": 0.8839285714285714,
+            "false_negative_rate": 0.01,
+            "false_negatives": 3,
+            "false_positive_rate": 0.25,
+            "false_positives": 75,
+            "negatives": 300,
+            "positives": 300,
+            "recall": 0.99,
+            "roc_auc": 0.9929111111111111,
+            "samples": 600,
+            "specificity": 0.75,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 225,
+            "true_positives": 297
+          },
+          "severity": "0.5",
+          "transform": "gaussian_blur"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.9930713024375071,
+            "balanced_accuracy": 0.865,
+            "brier_score": 0.072303902470073,
+            "f1": 0.8796433878157504,
+            "false_negative_rate": 0.013333333333333334,
+            "false_negatives": 4,
+            "false_positive_rate": 0.25666666666666665,
+            "false_positives": 77,
+            "negatives": 300,
+            "positives": 300,
+            "recall": 0.9866666666666667,
+            "roc_auc": 0.9920777777777777,
+            "samples": 600,
+            "specificity": 0.7433333333333334,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 223,
+            "true_positives": 296
+          },
+          "severity": "1.0",
+          "transform": "gaussian_blur"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.9922050969347092,
+            "balanced_accuracy": 0.8266666666666667,
+            "brier_score": 0.09131096258712594,
+            "f1": 0.8510028653295129,
+            "false_negative_rate": 0.01,
+            "false_negatives": 3,
+            "false_positive_rate": 0.33666666666666667,
+            "false_positives": 101,
+            "negatives": 300,
+            "positives": 300,
+            "recall": 0.99,
+            "roc_auc": 0.9908444444444444,
+            "samples": 600,
+            "specificity": 0.6633333333333333,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 199,
+            "true_positives": 297
+          },
+          "severity": "2.0",
+          "transform": "gaussian_blur"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.9941211664001393,
+            "balanced_accuracy": 0.88,
+            "brier_score": 0.06458395624522523,
+            "f1": 0.8918918918918919,
+            "false_negative_rate": 0.01,
+            "false_negatives": 3,
+            "false_positive_rate": 0.23,
+            "false_positives": 69,
+            "negatives": 300,
+            "positives": 300,
+            "recall": 0.99,
+            "roc_auc": 0.9932222222222222,
+            "samples": 600,
+            "specificity": 0.77,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 231,
+            "true_positives": 297
+          },
+          "severity": "0.5",
+          "transform": "resize"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.9934784954830985,
+            "balanced_accuracy": 0.8966666666666667,
+            "brier_score": 0.059427781915104276,
+            "f1": 0.9051987767584098,
+            "false_negative_rate": 0.013333333333333334,
+            "false_negatives": 4,
+            "false_positive_rate": 0.19333333333333333,
+            "false_positives": 58,
+            "negatives": 300,
+            "positives": 300,
+            "recall": 0.9866666666666667,
+            "roc_auc": 0.9928333333333333,
+            "samples": 600,
+            "specificity": 0.8066666666666666,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 242,
+            "true_positives": 296
+          },
+          "severity": "0.25",
+          "transform": "resize"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.9939606997095484,
+            "balanced_accuracy": 0.9199999999999999,
+            "brier_score": 0.04449215732405471,
+            "f1": 0.9247648902821317,
+            "false_negative_rate": 0.016666666666666666,
+            "false_negatives": 5,
+            "false_positive_rate": 0.14333333333333334,
+            "false_positives": 43,
+            "negatives": 300,
+            "positives": 300,
+            "recall": 0.9833333333333333,
+            "roc_auc": 0.9931666666666666,
+            "samples": 600,
+            "specificity": 0.8566666666666667,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 257,
+            "true_positives": 295
+          },
+          "severity": "0.02",
+          "transform": "gaussian_noise"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.9903316251845251,
+            "balanced_accuracy": 0.9416666666666667,
+            "brier_score": 0.04294381789550074,
+            "f1": 0.9434571890145396,
+            "false_negative_rate": 0.02666666666666667,
+            "false_negatives": 8,
+            "false_positive_rate": 0.09,
+            "false_positives": 27,
+            "negatives": 300,
+            "positives": 300,
+            "recall": 0.9733333333333334,
+            "roc_auc": 0.9895777777777778,
+            "samples": 600,
+            "specificity": 0.91,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 273,
+            "true_positives": 292
+          },
+          "severity": "0.05",
+          "transform": "gaussian_noise"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.983347944790486,
+            "balanced_accuracy": 0.9333333333333333,
+            "brier_score": 0.0551886832651869,
+            "f1": 0.9342105263157895,
+            "false_negative_rate": 0.05333333333333334,
+            "false_negatives": 16,
+            "false_positive_rate": 0.08,
+            "false_positives": 24,
+            "negatives": 300,
+            "positives": 300,
+            "recall": 0.9466666666666667,
+            "roc_auc": 0.9819555555555556,
+            "samples": 600,
+            "specificity": 0.92,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 276,
+            "true_positives": 284
+          },
+          "severity": "0.1",
+          "transform": "gaussian_noise"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.9929649981867501,
+            "balanced_accuracy": 0.895,
+            "brier_score": 0.05771320339123241,
+            "f1": 0.9041095890410958,
+            "false_negative_rate": 0.01,
+            "false_negatives": 3,
+            "false_positive_rate": 0.2,
+            "false_positives": 60,
+            "negatives": 300,
+            "positives": 300,
+            "recall": 0.99,
+            "roc_auc": 0.9925444444444445,
+            "samples": 600,
+            "specificity": 0.8,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 240,
+            "true_positives": 297
+          },
+          "severity": "-0.2",
+          "transform": "brightness"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.9922103283733703,
+            "balanced_accuracy": 0.8666666666666667,
+            "brier_score": 0.06793419680705107,
+            "f1": 0.8813056379821959,
+            "false_negative_rate": 0.01,
+            "false_negatives": 3,
+            "false_positive_rate": 0.25666666666666665,
+            "false_positives": 77,
+            "negatives": 300,
+            "positives": 300,
+            "recall": 0.99,
+            "roc_auc": 0.9917444444444444,
+            "samples": 600,
+            "specificity": 0.7433333333333334,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 223,
+            "true_positives": 297
+          },
+          "severity": "0.2",
+          "transform": "brightness"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.992272666374845,
+            "balanced_accuracy": 0.905,
+            "brier_score": 0.05462491293713747,
+            "f1": 0.9121725731895224,
+            "false_negative_rate": 0.013333333333333334,
+            "false_negatives": 4,
+            "false_positive_rate": 0.17666666666666667,
+            "false_positives": 53,
+            "negatives": 300,
+            "positives": 300,
+            "recall": 0.9866666666666667,
+            "roc_auc": 0.9916111111111111,
+            "samples": 600,
+            "specificity": 0.8233333333333334,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 247,
+            "true_positives": 296
+          },
+          "severity": "-0.2",
+          "transform": "contrast"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.9942104709808263,
+            "balanced_accuracy": 0.86,
+            "brier_score": 0.07106338081291926,
+            "f1": 0.8761061946902655,
+            "false_negative_rate": 0.01,
+            "false_negatives": 3,
+            "false_positive_rate": 0.27,
+            "false_positives": 81,
+            "negatives": 300,
+            "positives": 300,
+            "recall": 0.99,
+            "roc_auc": 0.9932888888888889,
+            "samples": 600,
+            "specificity": 0.73,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 219,
+            "true_positives": 297
+          },
+          "severity": "0.2",
+          "transform": "contrast"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.9940719410631986,
+            "balanced_accuracy": 0.8766666666666667,
+            "brier_score": 0.06353295992239189,
+            "f1": 0.8892215568862275,
+            "false_negative_rate": 0.01,
+            "false_negatives": 3,
+            "false_positive_rate": 0.23666666666666666,
+            "false_positives": 71,
+            "negatives": 300,
+            "positives": 300,
+            "recall": 0.99,
+            "roc_auc": 0.9932111111111112,
+            "samples": 600,
+            "specificity": 0.7633333333333333,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 229,
+            "true_positives": 297
+          },
+          "severity": "-0.2",
+          "transform": "saturation"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.9937382265261704,
+            "balanced_accuracy": 0.8666666666666667,
+            "brier_score": 0.06880800413093446,
+            "f1": 0.8813056379821959,
+            "false_negative_rate": 0.01,
+            "false_negatives": 3,
+            "false_positive_rate": 0.25666666666666665,
+            "false_positives": 77,
+            "negatives": 300,
+            "positives": 300,
+            "recall": 0.99,
+            "roc_auc": 0.9927222222222222,
+            "samples": 600,
+            "specificity": 0.7433333333333334,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 223,
+            "true_positives": 297
+          },
+          "severity": "0.2",
+          "transform": "saturation"
+        },
+        {
+          "metrics": {
+            "average_precision": 0.9926196803442356,
+            "balanced_accuracy": 0.87,
+            "brier_score": 0.06618182881996869,
+            "f1": 0.8835820895522388,
+            "false_negative_rate": 0.013333333333333334,
+            "false_negatives": 4,
+            "false_positive_rate": 0.24666666666666667,
+            "false_positives": 74,
+            "negatives": 300,
+            "positives": 300,
+            "recall": 0.9866666666666667,
+            "roc_auc": 0.9915666666666667,
+            "samples": 600,
+            "specificity": 0.7533333333333333,
+            "threshold": 0.4004286378622055,
+            "true_negatives": 226,
+            "true_positives": 296
+          },
+          "severity": "0.8",
+          "transform": "center_crop"
+        }
+      ],
+      "worst_transformed_balanced_accuracy": 0.8266666666666667
+    },
+    "threshold": 0.4004286378622055
+  },
+  "generated_at_utc": "2026-08-31T14:09:11.861357+00:00",
+  "genimage_validation_was_previously_used_for_training_early_stopping": true,
+  "numeric_selector_consumed_test_predictions": false,
+  "policy_was_motivated_by_prior_test_review": true,
+  "promotion": {
+    "checks": {
+      "genimage_balanced_accuracy": {
+        "limit": 0.73,
+        "operator": ">=",
+        "passed": true,
+        "value": 0.7910714285714286
+      },
+      "genimage_mean_transformed_balanced_accuracy": {
+        "limit": 0.73,
+        "operator": ">=",
+        "passed": true,
+        "value": 0.7846334586466166
+      },
+      "genimage_worst_transformed_balanced_accuracy": {
+        "limit": 0.65,
+        "operator": ">=",
+        "passed": true,
+        "value": 0.7017857142857142
+      },
+      "sid_balanced_accuracy": {
+        "limit": 0.93,
+        "operator": ">=",
+        "passed": false,
+        "value": 0.8716666666666666
+      },
+      "sid_false_positive_rate": {
+        "limit": 0.05,
+        "operator": "<=",
+        "passed": false,
+        "value": 0.24666666666666667
+      },
+      "sid_mean_transformed_balanced_accuracy": {
+        "limit": 0.9,
+        "operator": ">=",
+        "passed": false,
+        "value": 0.8818421052631579
+      },
+      "sid_recall": {
+        "limit": 0.9,
+        "operator": ">=",
+        "passed": true,
+        "value": 0.99
+      },
+      "sid_worst_transformed_balanced_accuracy": {
+        "limit": 0.85,
+        "operator": ">=",
+        "passed": false,
+        "value": 0.8266666666666667
+      }
+    },
+    "evidence_status": "exploratory_rescore_of_previously_observed_test_predictions",
+    "numeric_selector_consumed_test_predictions": false,
+    "passed": false,
+    "policy_was_motivated_by_prior_test_review": true,
+    "recommendation": "retain_v1"
+  },
+  "schema_version": 1,
+  "scope": "validation-only numeric threshold selection followed by an exploratory re-score of previously observed tests",
+  "selection": {
+    "best_genimage_validation_balanced_accuracy": 0.7875,
+    "candidate_count": 1722,
+    "feasible_candidate_count": 177,
+    "policy": {
+      "derived_genimage_balanced_accuracy_floor": 0.7675,
+      "max_genimage_balanced_accuracy_drop": 0.02,
+      "min_genimage_balanced_accuracy": 0.73,
+      "min_genimage_recall": 0.55,
+      "min_sid_recall": 0.95,
+      "version": "sid-fpr-min-v1"
+    },
+    "selected": {
+      "genimage_validation": {
+        "average_precision": 0.8440012886538225,
+        "balanced_accuracy": 0.7678571428571429,
+        "brier_score": 0.1791523095325707,
+        "f1": 0.7440944881889764,
+        "false_negative_rate": 0.325,
+        "false_negatives": 182,
+        "false_positive_rate": 0.1392857142857143,
+        "false_positives": 78,
+        "negatives": 560,
+        "positives": 560,
+        "recall": 0.675,
+        "roc_auc": 0.8385427295918367,
+        "samples": 1120,
+        "specificity": 0.8607142857142858,
+        "threshold": 0.4004286378622055,
+        "true_negatives": 482,
+        "true_positives": 378
+      },
+      "sid_validation": {
+        "average_precision": 0.9868634786761733,
+        "balanced_accuracy": 0.8716666666666667,
+        "brier_score": 0.07500242898935444,
+        "f1": 0.8859259259259259,
+        "false_negative_rate": 0.0033333333333333335,
+        "false_negatives": 1,
+        "false_positive_rate": 0.25333333333333335,
+        "false_positive_rate_wilson_95_descriptive": [
+          0.20744975020452644,
+          0.30545411559958296
+        ],
+        "false_positives": 76,
+        "negatives": 300,
+        "positives": 300,
+        "recall": 0.9966666666666667,
+        "roc_auc": 0.9873,
+        "samples": 600,
+        "specificity": 0.7466666666666666,
+        "threshold": 0.4004286378622055,
+        "true_negatives": 224,
+        "true_positives": 299
+      },
+      "threshold": 0.4004286378622055
+    },
+    "status": "selected"
+  },
+  "validation_inputs": {
+    "genimage": {
+      "class_counts": {
+        "0": 560,
+        "1": 560
+      },
+      "rows": 1120,
+      "sha256": "7be2ebf87bf87921d1e1d3e7806468a8eee6b549c12de6969e2d18a2024d2fc4"
+    },
+    "sid": {
+      "class_counts": {
+        "0": 300,
+        "1": 300
+      },
+      "rows": 600,
+      "sha256": "73d77c018b42f5c1a436c8f2af07b65a4ddb89a9e06f702f84c0a2f03992d339"
+    }
+  },
+  "wildfake_used": false
+}

@@ -51,6 +51,7 @@ artifacts/figures/**
 !artifacts/metrics/training_history.json
 !artifacts/metrics/genimage_v2_training_history.json
 !artifacts/metrics/genimage_v2_summary.json
+!artifacts/metrics/genimage_v2_calibration.json
 !artifacts/metrics/run_context.json
 !artifacts/metrics/pip_freeze.txt
 !artifacts/metrics/wildfake_demo_summary.json
@@ -65,6 +66,9 @@ artifacts/figures/**
 !artifacts/figures/genimage_v2_comparison.png
 genimage_v2_export/
 genimage_v2_export.zip
+/genimage_v2_calibration_export/
+/genimage_v2_calibration_export.zip
+/local_audit/
 *.log
 
 # OS files

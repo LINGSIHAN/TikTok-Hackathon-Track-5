@@ -216,9 +216,10 @@ both held-out tests under all 20 scenarios, and creates:
 
 The export contains `local_audit/` (checkpoint, manifests, predictions, raw
 metrics, hashes, and environment) and `public/` (sanitized JSON, Markdown, and
-figure). It does not promote v2: the application continues to load
-`artifacts/checkpoints/model.safetensors` until the comparison is reviewed
-manually. The completed comparison is recorded in the
+figure). The workflow never auto-promotes v2. Manual review and
+validation-only calibration subsequently rejected the candidate, so the
+application continues to load `artifacts/checkpoints/model.safetensors`. The
+completed comparison is recorded in the
 [`aggregate summary`](artifacts/metrics/genimage_v2_summary.json),
 [`review report`](docs/submission/genimage-v2-report.md), and
 [`comparison figure`](artifacts/figures/genimage_v2_comparison.png). Full run
@@ -231,10 +232,16 @@ workflow performs **no retraining**. It chooses the lowest-SID-false-positive
 threshold from clean validation predictions under fixed SID-recall and
 GenImage-performance safeguards, then exploratorily re-scores the locked
 threshold on the saved, previously inspected test predictions. Those tests are
-not presented as a fresh unbiased holdout. It creates
-`/kaggle/working/genimage_v2_calibration_export.zip`; test or WildFake results
-must never be used to adjust the threshold afterward. The complete deadline
-sequence and promotion gates are in
+not presented as a fresh unbiased holdout.
+
+The single predeclared calibration run is complete. It locked threshold
+`0.40042864`, but the exploratory SID test false-positive rate was still
+24.67%, and four of eight deployment gates failed. Therefore v2 was rejected;
+the application remains on v1 at `0.50`, and no second tuning attempt is
+permitted. The reviewed outputs are the
+[`aggregate calibration evidence`](artifacts/metrics/genimage_v2_calibration.json)
+and [`calibration report`](docs/submission/genimage-v2-calibration-report.md).
+The completed decision and remaining deadline steps are recorded in
 [`docs/submission/final-runbook.md`](docs/submission/final-runbook.md).
 
 ## Required batch inference
@@ -283,10 +290,10 @@ audit rules in [`data/README.md`](data/README.md).
 
 The optional v2 candidate uses Unbiased Tiny GenImage version 1 only after an
 explicit licence confirmation. Its prepared data and detailed manifests stay
-ignored, and WildFake is excluded from the workflow. Review found a major
-GenImage gain but a material SID false-positive regression at threshold 0.50,
-so v1 remains the deployed checkpoint while v2 awaits validation-only
-calibration.
+ignored, and WildFake is excluded from the workflow. Validation-only
+calibration could not reduce the candidate's SID false-positive rate below the
+5% deployment gate without breaking the predeclared cross-dataset safeguards.
+The candidate was rejected, so v1 remains the deployed checkpoint at `0.50`.
 
 ## Current verified status
 
@@ -300,16 +307,20 @@ calibration.
   cover all 20 scenarios and all exported metrics were independently recomputed
   with zero discrepancy.
 - The Kaggle pipeline passed its CUDA checkpoint smoke test before packaging.
-  The promoted checkpoint also passes local CPU loading/inference, the required
-  directory-to-JSON CLI, the complete repository test suite, and a headless Streamlit
-  health check. The remaining external gates are the public Streamlit
+  The deployed v1 checkpoint also passes local CPU loading/inference, the
+  required directory-to-JSON CLI, the complete repository test suite, and a
+  headless Streamlit health check. The remaining external gates are a
+  fresh-environment setup check, verified contributor details, public Streamlit
   deployment, two-image live smoke test, demo video, and final Devpost links.
 - The GenImage v2 Kaggle run completed against commit `34cc2fb`. All archive,
   checkpoint-lineage, manifest, prediction, and metric hashes passed independent
-  validation. On held-out GenImage, v2 improves clean balanced accuracy from
-  55.80% to 75.80% and ROC-AUC from 0.6032 to 0.8633. On SID, balanced accuracy
-  falls from 96.33% to 90.00% and false-positive rate rises from 4.67% to
-  18.67%; therefore the candidate was not promoted and v1 remains active.
+  validation. At threshold `0.50`, v2 substantially improved GenImage but raised
+  SID false positives from 4.67% to 18.67%.
+- The separate validation-only calibration completed against commit `2de9d2b`
+  and locked threshold `0.40042864` without retraining. Its exploratory SID test
+  false-positive rate was 24.67%, balanced accuracy was 87.17%, and SID
+  transformed mean/worst balanced accuracy was 88.18%/82.67%. Four of eight
+  deployment gates failed, so the reviewed decision is to retain v1 at `0.50`.
 
 See [`docs/submission/requirements-checklist.md`](docs/submission/requirements-checklist.md)
 for the remaining evidence and submission gates.
