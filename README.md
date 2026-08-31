@@ -193,6 +193,34 @@ Extract that ZIP into the repository root; `.gitignore` exposes only the compact
 final checkpoint, manifest/provenance, metrics, predictions, and plots that are
 useful for the public submission. Raw images and intermediate runs stay ignored.
 
+### GenImage v2 candidate workflow
+
+The separate
+[`train_genimage_v2_kaggle.ipynb`](notebooks/train_genimage_v2_kaggle.ipynb)
+workflow warm-starts a **candidate** EfficientNet-B0 from the frozen v1
+checkpoint. It combines the 4,800 SID training rows with a deterministic,
+balanced 11,200-image subset of Kaggle's
+[`cartografia/unbiased-tiny-genimage`](https://www.kaggle.com/datasets/cartografia/unbiased-tiny-genimage)
+version 1. GenImage validation and test rows remain held out, and SID validation
+and test rows are never added to v2 training.
+
+In Kaggle, enable a T4 GPU and Internet, attach the dataset with **Add Input**,
+then choose **Run All**. The notebook verifies the exact source inventory,
+recreates the pinned SID sample, normalizes and deduplicates GenImage, runs tests
+and a CUDA smoke check, trains for at most three epochs, compares v1 and v2 on
+both held-out tests under all 20 scenarios, and creates:
+
+```text
+/kaggle/working/genimage_v2_export.zip
+```
+
+The export contains `local_audit/` (checkpoint, manifests, predictions, raw
+metrics, hashes, and environment) and `public/` (sanitized JSON, Markdown, and
+figure). It does not promote v2: the application continues to load
+`artifacts/checkpoints/model.safetensors` until the comparison is reviewed
+manually. No v2 performance claim belongs in the submission until the real
+Kaggle run completes. Full instructions are in [`SETUP.md`](SETUP.md).
+
 ## Required batch inference
 
 ```bash
@@ -237,6 +265,11 @@ demonstration/evaluation. It was not and must not be used for training,
 threshold selection, or model selection. See the exact immutable subset and
 audit rules in [`data/README.md`](data/README.md).
 
+The optional v2 candidate uses Unbiased Tiny GenImage version 1 only after an
+explicit licence confirmation. Its prepared data and detailed manifests stay
+ignored, WildFake is excluded from the workflow, and v1 remains the deployed
+checkpoint while v2 is under review.
+
 ## Current verified status
 
 - Core training, inference, transformation, evaluation, and Streamlit code is
@@ -253,6 +286,9 @@ audit rules in [`data/README.md`](data/README.md).
   directory-to-JSON CLI, the complete repository test suite, and a headless Streamlit
   health check. The remaining external gates are the public Streamlit
   deployment, two-image live smoke test, demo video, and final Devpost links.
+- The GenImage v2 Kaggle workflow is implemented but has not yet produced a
+  reviewed training run. Its future metrics must be added only from the
+  validated `genimage_v2_export.zip`; v1 remains active in the application.
 
 See [`docs/submission/requirements-checklist.md`](docs/submission/requirements-checklist.md)
 for the remaining evidence and submission gates.

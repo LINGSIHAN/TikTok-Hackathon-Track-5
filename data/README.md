@@ -46,6 +46,44 @@ evaluated dataset and scope explicitly.
 The generated manifest summary is the authoritative record of the counts from
 the actual run. Do not replace it with estimated numbers in the submission.
 
+## Optional Unbiased Tiny GenImage v2 training source
+
+The v2 candidate workflow uses Kaggle's
+[`cartografia/unbiased-tiny-genimage`](https://www.kaggle.com/datasets/cartografia/unbiased-tiny-genimage)
+version 1 as a read-only attached input. The workflow records the dataset's
+CC BY-NC-SA 4.0 notice and the participant's 2026-08-31 licence confirmation;
+users remain responsible for complying with the upstream
+[`GenImage licence`](https://github.com/GenImage-Dataset/GenImage/blob/main/License)
+and [`ImageNet access agreement`](https://image-net.org/accessagreement).
+
+Preparation fails unless the attached input has exactly 23,329 files and
+2,528,629,592 bytes: 2,500 images from each of ADM, BigGAN, GLIDE, Midjourney,
+Stable Diffusion 1.5, VQDM, and Wukong; 5,828 real Nature images; and the pinned
+`nature_metadata.csv` SHA-256
+`5f9a46e53e624339f6db8cc4d4a4fe5e54a0371e4b07a7da278300f6ed699e91`.
+
+With seed 42, the script selects 800 generated images per generator and 5,600
+source-class-balanced real images. Both labels are decoded and re-encoded as RGB
+JPEG quality 95 with 4:4:4 subsampling. It removes same-label normalized-image
+duplicates against the complete pinned SID sample and within GenImage, refills
+the quotas from the deterministic candidate ordering, and rejects conflicting
+labels, corrupt files, unsafe paths, or an unexpected inventory.
+
+The exact GenImage split is:
+
+| Split | Real | Generated | Total |
+| --- | ---: | ---: | ---: |
+| Train | 4,480 | 4,480 | 8,960 |
+| Validation | 560 | 560 | 1,120 |
+| Test | 560 | 560 | 1,120 |
+
+Only the 4,800 SID training rows are added to the GenImage training rows. SID
+validation/test rows remain outside v2 training, and the combined validation and
+test splits are the untouched GenImage splits. Images, detailed manifests,
+predictions, and audit outputs remain ignored; only compact provenance, digests,
+and reviewed aggregate evidence may be committed. WildFake is neither read nor
+used anywhere in this workflow.
+
 ## WildFake post-lock demonstration subset
 
 WildFake is an external, demonstration-only benchmark. It is never an input to

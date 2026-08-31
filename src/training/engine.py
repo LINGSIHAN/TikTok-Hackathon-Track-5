@@ -104,6 +104,22 @@ def extract_logits(output: Any) -> torch.Tensor:
     return output
 
 
+def _set_frozen_batchnorm_eval(model: nn.Module) -> None:
+    """Disable running-stat updates for fully frozen BatchNorm modules.
+
+    Calling ``model.train()`` normally puts every BatchNorm layer into training
+    mode even when its affine parameters are frozen.  Warm-start fine-tuning
+    can opt into retaining the parent model's running statistics for only
+    those BatchNorm modules that have no trainable direct parameters.
+    """
+
+    for module in model.modules():
+        if isinstance(module, nn.modules.batchnorm._BatchNorm) and not any(
+            parameter.requires_grad for parameter in module.parameters(recurse=False)
+        ):
+            module.eval()
+
+
 def run_epoch(
     model: nn.Module,
     loader: Iterable[Any],
@@ -114,6 +130,7 @@ def run_epoch(
     scaler: Any | None = None,
     criterion: nn.Module | None = None,
     threshold: float = 0.5,
+    freeze_frozen_batchnorm: bool = False,
 ) -> EpochResult:
     """Run one training or evaluation epoch.
 
@@ -123,6 +140,8 @@ def run_epoch(
 
     training = optimizer is not None
     model.train(training)
+    if training and freeze_frozen_batchnorm:
+        _set_frozen_batchnorm_eval(model)
     criterion = criterion or nn.BCEWithLogitsLoss()
     use_amp = bool(mixed_precision and device.type == "cuda")
     if training and use_amp and scaler is None:

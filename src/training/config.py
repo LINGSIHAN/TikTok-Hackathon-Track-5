@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Mapping, TypeVar
@@ -53,6 +54,15 @@ class OutputConfig:
 
 
 @dataclass(frozen=True)
+class InitializationConfig:
+    """Optional frozen-checkpoint warm-start configuration."""
+
+    checkpoint_path: str
+    expected_sha256: str
+    freeze_frozen_batchnorm: bool
+
+
+@dataclass(frozen=True)
 class ExperimentConfig:
     seed: int
     data: DataConfig
@@ -60,11 +70,15 @@ class ExperimentConfig:
     training: TrainingConfig
     robustness: RobustnessConfig
     output: OutputConfig
+    initialization: InitializationConfig | None = None
 
     def to_dict(self) -> dict[str, Any]:
         """Return a JSON-serializable representation of this configuration."""
 
-        return asdict(self)
+        payload = asdict(self)
+        if self.initialization is None:
+            payload.pop("initialization")
+        return payload
 
 
 _T = TypeVar("_T")
@@ -99,9 +113,10 @@ def _section(
 def config_from_mapping(raw: Mapping[str, Any]) -> ExperimentConfig:
     """Construct and validate an :class:`ExperimentConfig` from a mapping."""
 
-    expected = {"seed", "data", "model", "training", "robustness", "output"}
+    required = {"seed", "data", "model", "training", "robustness", "output"}
+    expected = required | {"initialization"}
     unknown = set(raw) - expected
-    missing = expected - set(raw)
+    missing = required - set(raw)
     if unknown:
         raise ConfigError(f"Unknown top-level key(s): {', '.join(sorted(unknown))}")
     if missing:
@@ -111,6 +126,11 @@ def config_from_mapping(raw: Mapping[str, Any]) -> ExperimentConfig:
     if isinstance(seed, bool) or not isinstance(seed, int) or seed < 0:
         raise ConfigError("'seed' must be a non-negative integer")
 
+    initialization = (
+        _section(raw, "initialization", InitializationConfig)
+        if "initialization" in raw
+        else None
+    )
     config = ExperimentConfig(
         seed=seed,
         data=_section(raw, "data", DataConfig),
@@ -118,6 +138,7 @@ def config_from_mapping(raw: Mapping[str, Any]) -> ExperimentConfig:
         training=_section(raw, "training", TrainingConfig),
         robustness=_section(raw, "robustness", RobustnessConfig),
         output=_section(raw, "output", OutputConfig),
+        initialization=initialization,
     )
     _validate(config)
     return config
@@ -162,6 +183,41 @@ def _validate(config: ExperimentConfig) -> None:
             raise ConfigError(f"{name} must not be empty")
     if Path(config.output.checkpoint_path).suffix.lower() != ".safetensors":
         raise ConfigError("output.checkpoint_path must end in '.safetensors'")
+    output_paths = {
+        Path(config.output.checkpoint_path).expanduser().resolve(),
+        Path(config.output.metadata_path).expanduser().resolve(),
+        Path(config.output.history_path).expanduser().resolve(),
+    }
+    if len(output_paths) != 3:
+        raise ConfigError("checkpoint, metadata, and history output paths must be distinct")
+
+    initialization = config.initialization
+    if initialization is None:
+        return
+    if not isinstance(initialization.checkpoint_path, str) or not (
+        initialization.checkpoint_path.strip()
+    ):
+        raise ConfigError("initialization.checkpoint_path must not be empty")
+    if Path(initialization.checkpoint_path).suffix.lower() != ".safetensors":
+        raise ConfigError("initialization.checkpoint_path must end in '.safetensors'")
+    if not isinstance(initialization.expected_sha256, str) or re.fullmatch(
+        r"[0-9a-fA-F]{64}", initialization.expected_sha256
+    ) is None:
+        raise ConfigError(
+            "initialization.expected_sha256 must be a 64-character hexadecimal SHA-256"
+        )
+    if not isinstance(initialization.freeze_frozen_batchnorm, bool):
+        raise ConfigError("initialization.freeze_frozen_batchnorm must be a boolean")
+    if model.pretrained:
+        raise ConfigError(
+            "model.pretrained must be false when initialization is configured"
+        )
+
+    initial_path = Path(initialization.checkpoint_path).expanduser().resolve()
+    if initial_path in output_paths:
+        raise ConfigError(
+            "initialization.checkpoint_path and all output paths must be different"
+        )
 
 
 def load_config(path: str | Path) -> ExperimentConfig:

@@ -1,5 +1,7 @@
 -r requirements.txt
-datasets>=3,<5
+# These versions produced the frozen SID manifest and its normalized JPEG hashes.
+datasets==4.8.5
+Pillow==11.3.0
 matplotlib>=3.9,<4
 pytest>=8.3,<9
 remotezip==0.12.6

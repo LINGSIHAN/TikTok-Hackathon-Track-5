@@ -45,6 +45,13 @@ robustness-trained model on the same held-out source groups.
 - Kaggle's free GPU notebook environment for training
 - Codex for collaborative implementation/review and GitHub for version control
 
+We also built a separate, review-gated v2 workflow that warm-starts from the
+frozen model using only SID training rows plus a balanced subset of Unbiased
+Tiny GenImage. It holds out GenImage validation/test data, compares v1 and v2 on
+both GenImage and SID across the same 20 scenarios, and never reads WildFake.
+The application remains on v1 unless that exported comparison is reviewed and
+accepted.
+
 SID_Set is listed as CC BY 4.0 on its dataset card. The pinned run retained
 3,000 images per class, split into 4,800 training, 600 validation, and 600 test
 images with equal class counts in every split.
@@ -76,6 +83,10 @@ DALL-E 3 generated organizer rows. A byte-level audit found 1,808 same-label
 duplicate groups and 8,717 unique content hashes; metrics retain all organizer
 rows, so this is not a sample of 13,841 independent images. We present it as a
 transparent external demonstration, not universal detector performance.
+
+The GenImage v2 workflow is not included in these numerical claims yet. Add its
+results only after the real Kaggle run produces a validated, sanitized
+`genimage_v2_export.zip`; until then, v1 is the deployed model of record.
 
 ## Challenges and lessons
 

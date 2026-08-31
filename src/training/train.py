@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
+import hmac
 import json
 import random
 import time
@@ -18,6 +20,7 @@ from src.data.preprocessing import (
     PREPROCESSING_METADATA_KEY,
     build_image_preprocess,
     normalize_pil_image,
+    resolve_checkpoint_image_size,
 )
 from src.training.config import ExperimentConfig, load_config
 from src.training.engine import (
@@ -110,13 +113,81 @@ def _write_json(path: str | Path, payload: Any) -> None:
     temporary_path.replace(output_path)
 
 
+def _sha256_file(path: str | Path) -> str:
+    """Return the SHA-256 of ``path`` without loading it all into memory."""
+
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _initialize_model_from_checkpoint(
+    model: torch.nn.Module,
+    config: ExperimentConfig,
+    *,
+    device: torch.device,
+) -> str | None:
+    """Verify and load an optional warm-start checkpoint.
+
+    Metadata is inspected before any weights are applied, and this function is
+    called before optimizer construction so optimizer state always references
+    the initialized model parameters.
+    """
+
+    initialization = config.initialization
+    if initialization is None:
+        return None
+
+    checkpoint_path = Path(initialization.checkpoint_path)
+    if not checkpoint_path.is_file():
+        raise FileNotFoundError(
+            f"initialization checkpoint not found: {checkpoint_path}"
+        )
+    actual_sha256 = _sha256_file(checkpoint_path)
+    if not hmac.compare_digest(
+        actual_sha256, initialization.expected_sha256.lower()
+    ):
+        raise ValueError(
+            "initialization checkpoint SHA-256 mismatch: "
+            f"expected {initialization.expected_sha256.lower()}, "
+            f"got {actual_sha256}"
+        )
+
+    from safetensors import safe_open
+
+    with safe_open(
+        str(checkpoint_path), framework="pt", device="cpu"
+    ) as checkpoint:
+        checkpoint_metadata = dict(checkpoint.metadata() or {})
+
+    architecture = checkpoint_metadata.get("architecture")
+    if architecture != "efficientnet_b0_binary":
+        raise ValueError(
+            "initialization checkpoint architecture must be "
+            f"'efficientnet_b0_binary', got {architecture!r}"
+        )
+    resolve_checkpoint_image_size(
+        checkpoint_metadata,
+        requested_image_size=config.data.image_size,
+    )
+
+    from src.models.checkpoints import load_checkpoint
+
+    load_checkpoint(model, checkpoint_path, device=str(device), strict=True)
+    return actual_sha256
+
+
 def _build_checkpoint_metadata(
     config: ExperimentConfig,
     early_stopping: EarlyStopping,
+    *,
+    parent_checkpoint_sha256: str | None = None,
 ) -> dict[str, str]:
     """Return the weight-file metadata required for safe inference."""
 
-    return {
+    metadata = {
         "architecture": "efficientnet_b0_binary",
         "best_epoch": str(early_stopping.best_epoch),
         "best_validation_loss": f"{early_stopping.best_loss:.10g}",
@@ -125,6 +196,9 @@ def _build_checkpoint_metadata(
         "robust_training": str(config.robustness.enabled).lower(),
         "seed": str(config.seed),
     }
+    if parent_checkpoint_sha256 is not None:
+        metadata["parent_checkpoint_sha256"] = parent_checkpoint_sha256
+    return metadata
 
 
 def train_from_config(
@@ -145,8 +219,15 @@ def train_from_config(
         freeze_backbone=config.model.freeze_backbone,
         unfreeze_last_blocks=config.model.unfreeze_last_blocks,
     ).to(device)
+    parent_checkpoint_sha256 = _initialize_model_from_checkpoint(
+        model,
+        config,
+        device=device,
+    )
 
-    trainable_parameters = [parameter for parameter in model.parameters() if parameter.requires_grad]
+    trainable_parameters = [
+        parameter for parameter in model.parameters() if parameter.requires_grad
+    ]
     if not trainable_parameters:
         raise ValueError("The model has no trainable parameters")
     optimizer = torch.optim.AdamW(
@@ -158,6 +239,10 @@ def train_from_config(
     early_stopping = EarlyStopping(config.training.patience)
     history: list[dict[str, Any]] = []
     started_at = time.time()
+    freeze_frozen_batchnorm = bool(
+        config.initialization is not None
+        and config.initialization.freeze_frozen_batchnorm
+    )
 
     for epoch in range(1, config.training.epochs + 1):
         train_result = run_epoch(
@@ -167,6 +252,7 @@ def train_from_config(
             optimizer=optimizer,
             mixed_precision=config.training.mixed_precision,
             scaler=scaler,
+            freeze_frozen_batchnorm=freeze_frozen_batchnorm,
         )
         validation_result = run_epoch(
             model,
@@ -187,7 +273,11 @@ def train_from_config(
             break
 
     early_stopping.restore(model)
-    checkpoint_metadata = _build_checkpoint_metadata(config, early_stopping)
+    checkpoint_metadata = _build_checkpoint_metadata(
+        config,
+        early_stopping,
+        parent_checkpoint_sha256=parent_checkpoint_sha256,
+    )
     checkpoint_path = Path(config.output.checkpoint_path)
     checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
     save_checkpoint(model, checkpoint_path, metadata=checkpoint_metadata)
@@ -195,6 +285,7 @@ def train_from_config(
     metadata: dict[str, Any] = {
         "schema_version": 1,
         "checkpoint_path": str(checkpoint_path),
+        "checkpoint_sha256": _sha256_file(checkpoint_path),
         PREPROCESSING_METADATA_KEY: PREPROCESSING_CONTRACT_ID,
         "device": str(device),
         "epochs_completed": len(history),
@@ -205,6 +296,8 @@ def train_from_config(
         "trainable_parameter_count": count_parameters(model, trainable_only=True),
         "config": config.to_dict(),
     }
+    if parent_checkpoint_sha256 is not None:
+        metadata["parent_checkpoint_sha256"] = parent_checkpoint_sha256
     _write_json(config.output.metadata_path, metadata)
     return metadata
 

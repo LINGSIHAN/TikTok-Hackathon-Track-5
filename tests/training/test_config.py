@@ -51,6 +51,28 @@ def test_load_json_config(tmp_path):
     assert config.seed == 42
     assert config.robustness.enabled is True
     assert config.data.batch_size == 8
+    assert config.initialization is None
+    assert "initialization" not in config.to_dict()
+
+
+def test_optional_warm_start_configuration_is_parsed():
+    raw = valid_config()
+    raw["model"]["pretrained"] = False
+    raw["initialization"] = {
+        "checkpoint_path": "artifacts/checkpoints/model.safetensors",
+        "expected_sha256": "a" * 64,
+        "freeze_frozen_batchnorm": True,
+    }
+    raw["output"]["checkpoint_path"] = (
+        "artifacts/checkpoints/model_v2.safetensors"
+    )
+
+    config = config_from_mapping(raw)
+
+    assert config.initialization is not None
+    assert config.initialization.expected_sha256 == "a" * 64
+    assert config.initialization.freeze_frozen_batchnorm is True
+    assert config.to_dict()["initialization"] == raw["initialization"]
 
 
 def _yaml_sections(path):
@@ -82,6 +104,60 @@ def test_unknown_key_is_rejected():
     raw["training"]["typo"] = 1
 
     with pytest.raises(ConfigError, match="Unknown key"):
+        config_from_mapping(raw)
+
+
+@pytest.mark.parametrize(
+    ("change", "message"),
+    [
+        ({"expected_sha256": "not-a-hash"}, "expected_sha256"),
+        ({"freeze_frozen_batchnorm": 1}, "freeze_frozen_batchnorm"),
+        ({"checkpoint_path": "model.pt"}, "safetensors"),
+    ],
+)
+def test_invalid_warm_start_values_are_rejected(change, message):
+    raw = valid_config()
+    raw["model"]["pretrained"] = False
+    raw["initialization"] = {
+        "checkpoint_path": "artifacts/checkpoints/model.safetensors",
+        "expected_sha256": "a" * 64,
+        "freeze_frozen_batchnorm": True,
+        **change,
+    }
+    raw["output"]["checkpoint_path"] = (
+        "artifacts/checkpoints/model_v2.safetensors"
+    )
+
+    with pytest.raises(ConfigError, match=message):
+        config_from_mapping(raw)
+
+
+def test_warm_start_rejects_pretrained_and_output_overwrite():
+    raw = valid_config()
+    raw["model"]["pretrained"] = True
+    raw["initialization"] = {
+        "checkpoint_path": "artifacts/checkpoints/parent.safetensors",
+        "expected_sha256": "a" * 64,
+        "freeze_frozen_batchnorm": True,
+    }
+    raw["output"]["checkpoint_path"] = (
+        "artifacts/checkpoints/model_v2.safetensors"
+    )
+
+    with pytest.raises(ConfigError, match="pretrained"):
+        config_from_mapping(raw)
+
+    raw["model"]["pretrained"] = False
+    raw["initialization"]["checkpoint_path"] = raw["output"]["checkpoint_path"]
+    with pytest.raises(ConfigError, match="must be different"):
+        config_from_mapping(raw)
+
+
+def test_output_artifact_paths_must_be_distinct():
+    raw = valid_config()
+    raw["output"]["history_path"] = raw["output"]["metadata_path"]
+
+    with pytest.raises(ConfigError, match="output paths must be distinct"):
         config_from_mapping(raw)
 
 

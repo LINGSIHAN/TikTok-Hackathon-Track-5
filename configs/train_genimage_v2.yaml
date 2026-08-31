@@ -1,0 +1,36 @@
+seed: 42
+
+data:
+  manifest_path: data/processed/train_v2_manifest.csv
+  train_split: train
+  val_split: val
+  test_split: test
+  image_size: 224
+  batch_size: 64
+  num_workers: 2
+
+model:
+  pretrained: false
+  freeze_backbone: true
+  unfreeze_last_blocks: 1
+
+training:
+  epochs: 3
+  learning_rate: 0.00003
+  weight_decay: 0.0001
+  patience: 1
+  mixed_precision: true
+
+robustness:
+  enabled: true
+  clean_probability: 0.35
+
+initialization:
+  checkpoint_path: artifacts/checkpoints/model.safetensors
+  expected_sha256: 806fbabc5ecae8394369d08738cbf0c993568137d323a8133167e4557d04eed2
+  freeze_frozen_batchnorm: true
+
+output:
+  checkpoint_path: artifacts/checkpoints/model_v2.safetensors
+  metadata_path: artifacts/checkpoints/model_v2_metadata.json
+  history_path: artifacts/metrics/genimage_v2_training_history.json

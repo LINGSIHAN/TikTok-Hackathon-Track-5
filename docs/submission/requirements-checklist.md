@@ -56,3 +56,16 @@
 - [x] Same-label duplicate content is disclosed; conflicting labels fail closed.
 - [x] Public evidence contains only aggregate metrics and no local paths.
 - [x] Git contains no external images, range files, local manifests, or raw predictions.
+
+## GenImage v2 candidate review
+
+- [x] The separate notebook verifies a T4, repository state, dataset inventory, licence flag, and frozen v1 hash.
+- [x] GenImage selection is deterministic, balanced, normalized identically, and deduplicated against all SID hashes.
+- [x] Only 4,800 SID training rows are rehearsed; SID validation/test and all WildFake data stay outside training.
+- [x] Warm-start loading happens before optimizer construction and cannot overwrite v1.
+- [x] The evaluator requires all 20 scenarios, fixed threshold `0.50`, exact test counts, and finite metrics.
+- [x] The export separates local audit artifacts from sanitized public evidence and never auto-promotes v2.
+- [ ] The real Kaggle run has produced `genimage_v2_export.zip`.
+- [ ] The v1-versus-v2 GenImage and SID results have been reviewed for deployment.
+- [ ] Any accepted v2 numerical claims have been copied from the validated public summary.
+- [ ] If v2 is promoted, the application change and checkpoint lineage have received a separate review.

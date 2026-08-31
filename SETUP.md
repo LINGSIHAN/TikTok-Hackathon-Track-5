@@ -103,6 +103,44 @@ interpreter.
 No Kaggle API token or paid service is needed for this path. Free GPU quota and
 accelerator availability are controlled by Kaggle.
 
+## Kaggle GenImage v2 candidate run
+
+Use [`notebooks/train_genimage_v2_kaggle.ipynb`](notebooks/train_genimage_v2_kaggle.ipynb)
+for the separate warm-start experiment. This run does not replace the v1
+checkpoint and does not use WildFake.
+
+1. Push the implementation to GitHub, then import the v2 notebook into Kaggle.
+2. In **Settings**, select a T4 GPU and enable Internet.
+3. Choose **Add Input** and attach
+   [`cartografia/unbiased-tiny-genimage`](https://www.kaggle.com/datasets/cartografia/unbiased-tiny-genimage)
+   version 1.
+4. Confirm that your intended use complies with the GenImage and upstream
+   ImageNet terms represented by the notebook's licence-confirmation flag.
+5. Select **Run All**. Do not run the training cell by itself: the preceding
+   inventory, checkpoint, test, and CUDA gates are intentional.
+6. Wait for `Validated GenImage v2 export ready:` and download
+   `/kaggle/working/genimage_v2_export.zip`.
+7. Review `public/genimage-v2-report.md` and its compact JSON/figure. Keep the
+   detailed `local_audit/` layer for reproducibility before deciding whether to
+   deploy v2.
+
+The attached input must match the pinned inventory exactly: 2,500 images from
+each of seven generators, 5,828 Nature images, the fixed metadata digest,
+23,329 files, and 2,528,629,592 bytes. The workflow selects 5,600 real and
+5,600 generated images with seed 42, creates balanced 80/10/10 splits, and adds
+only the 4,800 SID training rows to the v2 training split. A mismatch stops the
+run instead of silently training on different data.
+
+The candidate uses the frozen v1 checkpoint as initialization, not as an exact
+resume, because v1 has no optimizer state. Training uses three epochs at most,
+early-stopping patience 1, AdamW at `3e-5`, batch size 64, mixed precision, and
+the existing 35% clean / 65% transformed sampler. Evaluation keeps the threshold
+at `0.50` and compares both models across all 20 scenarios on the 1,120-image
+GenImage test and 600-image SID regression test.
+
+Expect roughly 1–2 hours on a T4. SID streaming, Kaggle storage speed, and the
+four complete transformation evaluations are the main sources of variation.
+
 ## Local checks and demo
 
 ```bash

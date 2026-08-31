@@ -32,6 +32,7 @@ data/processed/**
 !data/processed/**/.gitkeep
 !data/processed/manifest.csv
 !data/processed/manifest_summary.json
+!data/processed/genimage_v2_manifest_summary.json
 
 # Training runs and generated evaluation artifacts
 artifacts/runs/
@@ -39,6 +40,7 @@ artifacts/checkpoints/*
 !artifacts/checkpoints/.gitkeep
 !artifacts/checkpoints/model.safetensors
 !artifacts/checkpoints/model_metadata.json
+!artifacts/checkpoints/model_v2_metadata.json
 artifacts/metrics/**
 artifacts/figures/**
 !artifacts/metrics/.gitkeep
@@ -47,6 +49,8 @@ artifacts/figures/**
 !artifacts/metrics/predictions.csv
 !artifacts/metrics/robustness.png
 !artifacts/metrics/training_history.json
+!artifacts/metrics/genimage_v2_training_history.json
+!artifacts/metrics/genimage_v2_summary.json
 !artifacts/metrics/run_context.json
 !artifacts/metrics/pip_freeze.txt
 !artifacts/metrics/wildfake_demo_summary.json
@@ -58,6 +62,9 @@ artifacts/figures/**
 !artifacts/figures/confusion_matrix.png
 !artifacts/figures/model_comparison.png
 !artifacts/figures/wildfake_demo.png
+!artifacts/figures/genimage_v2_comparison.png
+genimage_v2_export/
+genimage_v2_export.zip
 *.log
 
 # OS files

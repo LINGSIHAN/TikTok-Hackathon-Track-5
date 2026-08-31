@@ -38,6 +38,68 @@ def test_run_epoch_updates_weights_when_optimizer_is_supplied():
     assert not torch.equal(before, model.weight.detach())
 
 
+def test_run_epoch_can_preserve_frozen_batchnorm_running_statistics():
+    set_global_seed(11)
+    inputs = torch.tensor(
+        [[1.0, 2.0], [2.0, 3.0], [3.0, 4.0], [4.0, 5.0]]
+    )
+    labels = torch.tensor([0, 0, 1, 1])
+    loader = DataLoader(TensorDataset(inputs, labels), batch_size=4)
+    model = torch.nn.Sequential(
+        torch.nn.BatchNorm1d(2),
+        torch.nn.Linear(2, 1),
+    )
+    batchnorm = model[0]
+    for parameter in batchnorm.parameters():
+        parameter.requires_grad = False
+    optimizer = torch.optim.SGD(
+        (parameter for parameter in model.parameters() if parameter.requires_grad),
+        lr=0.1,
+    )
+    before = batchnorm.running_mean.detach().clone()
+
+    run_epoch(
+        model,
+        loader,
+        device=torch.device("cpu"),
+        optimizer=optimizer,
+        freeze_frozen_batchnorm=True,
+    )
+
+    assert batchnorm.training is False
+    assert torch.equal(before, batchnorm.running_mean)
+
+
+def test_run_epoch_retains_original_batchnorm_behavior_by_default():
+    inputs = torch.tensor(
+        [[1.0, 2.0], [2.0, 3.0], [3.0, 4.0], [4.0, 5.0]]
+    )
+    labels = torch.tensor([0, 0, 1, 1])
+    loader = DataLoader(TensorDataset(inputs, labels), batch_size=4)
+    model = torch.nn.Sequential(
+        torch.nn.BatchNorm1d(2),
+        torch.nn.Linear(2, 1),
+    )
+    batchnorm = model[0]
+    for parameter in batchnorm.parameters():
+        parameter.requires_grad = False
+    optimizer = torch.optim.SGD(
+        (parameter for parameter in model.parameters() if parameter.requires_grad),
+        lr=0.1,
+    )
+    before = batchnorm.running_mean.detach().clone()
+
+    run_epoch(
+        model,
+        loader,
+        device=torch.device("cpu"),
+        optimizer=optimizer,
+    )
+
+    assert batchnorm.training is True
+    assert not torch.equal(before, batchnorm.running_mean)
+
+
 def test_early_stopping_restores_best_weights():
     model = torch.nn.Linear(1, 1, bias=False)
     stopper = EarlyStopping(patience=2)
