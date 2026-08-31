@@ -100,6 +100,63 @@ See the sanitized [`WildFake demonstration report`](docs/submission/wildfake-dem
 only after model and threshold lock and never for training, threshold selection,
 or model selection.
 
+## Setup and installation
+
+### Prerequisites
+
+- Git and Python 3.11.
+- About 2 GB of free space for the repository, virtual environment, and CPU
+  dependencies. External datasets require additional space and are not included
+  in Git.
+- A Kaggle T4 GPU is recommended only for retraining. The included Streamlit
+  demo and checkpoints run on CPU.
+
+Clone the public repository and enter its root directory:
+
+```bash
+git clone https://github.com/LINGSIHAN/TikTok-Hackathon-Track-5.git
+cd TikTok-Hackathon-Track-5
+```
+
+On macOS or Linux, create the environment and install the CPU demo dependencies:
+
+```bash
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+On Windows PowerShell, use:
+
+```powershell
+py -3.11 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+Launch the demo:
+
+```bash
+streamlit run app/streamlit_app.py
+```
+
+No API key, database, or Streamlit secret is required. The app loads the tracked
+GenImage v2 checkpoint on CPU and displays
+`Model checkpoint available · GenImage v2` in the sidebar. For dataset
+preparation, evaluation, training, and the complete test suite, additionally
+install:
+
+```bash
+python -m pip install -r requirements-train.txt
+python -m pytest -q -p no:cacheprovider
+```
+
+The expected test result for this revision is **256 passed**. Platform-specific
+troubleshooting, PowerShell activation recovery, Kaggle GPU steps, and dataset
+preparation details are in [`SETUP.md`](SETUP.md).
+
 ## Repository layout
 
 ```text
@@ -246,6 +303,56 @@ and [`calibration report`](docs/submission/genimage-v2-calibration-report.md).
 The completed decision and remaining deadline steps are recorded in
 [`docs/submission/final-runbook.md`](docs/submission/final-runbook.md).
 
+### Reproduction verification checklist
+
+Run commands from the repository root. Python 3.11 is the local reference;
+the recorded Kaggle runs used Python 3.12.13, PyTorch 2.10.0+cu128, and a Tesla
+T4. Install `requirements-train.txt` before reproducing data preparation,
+training, evaluation, or tests.
+
+```bash
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements-train.txt
+python -m pytest -q -p no:cacheprovider
+```
+
+The current repository expectation is **256 passing tests**. Windows activation
+commands and the complete Kaggle setup are documented in [`SETUP.md`](SETUP.md).
+
+| Evidence being reproduced | Required input and action | Expected verification |
+| --- | --- | --- |
+| SID preparation | Run `python scripts/prepare_sid_subset.py --total 6000 --seed 42`. | 6,000 images: 4,800 train, 600 validation, and 600 test, balanced by class. `data/processed/manifest.csv` SHA-256: `6267a8d7e7749c1870601e196fe7ce1cc0fc2542a9975fa939832817e7fd3d9d`. |
+| Controlled v1 comparison | In a fresh checkout or Kaggle workspace, run all cells in `train_kaggle.ipynb`; do not retrain over the tracked checkpoints in the submission checkout. | Clean ROC-AUC `0.996400`; mean transformed ROC-AUC `0.995784`; worst transformed ROC-AUC `0.990278`; mean transformed balanced accuracy `95.83%`. Evidence: [`metrics.json`](artifacts/metrics/metrics.json) and [`model comparison`](artifacts/figures/model_comparison.png). |
+| WildFake clean demonstration | Run the downloader and default evaluator above after SID model lock. | 13,841 rows: 4,998 real and 8,843 generated. ROC-AUC `0.8554`, average precision `0.9175`, balanced accuracy `76.89%`, F1 `0.7630`. Evidence: [`summary JSON`](artifacts/metrics/wildfake_demo_summary.json) and [`report`](docs/submission/wildfake-demo-report.md). |
+| GenImage v2 run | In Kaggle, attach `cartografia/unbiased-tiny-genimage` version 1 and run all cells in `train_genimage_v2_kaggle.ipynb`. | `genimage_v2_export.zip`; v2 SHA-256 `b45022d9dab2a02300934c239eee24dd40ef8e402f24c1f27fc2d63a46117c12`. On held-out GenImage, clean ROC-AUC `0.8633` and balanced accuracy `75.80%`; mean transformed ROC-AUC `0.8636`. Evidence: [`summary JSON`](artifacts/metrics/genimage_v2_summary.json) and [`report`](docs/submission/genimage-v2-report.md). |
+| SID regression for v2 | Produced by the same v2 notebook on the untouched 600-image SID test split. | Clean ROC-AUC `0.9931`, balanced accuracy `90.00%`, FPR `18.67%`, and FNR `1.33%`. This documents the false-positive regression rather than hiding it. |
+| Validation-only calibration audit | Inspect the locked calibration JSON and report; do not run another tuning attempt or alter the threshold from observed tests. | Selected validation threshold `0.40042864`; exploratory SID test FPR `24.67%`; four of eight deployment gates failed. Evidence: [`calibration JSON`](artifacts/metrics/genimage_v2_calibration.json) and [`calibration report`](docs/submission/genimage-v2-calibration-report.md). |
+| Streamlit deployment | Run `streamlit run app/streamlit_app.py`, upload one authentic and one generated image, and run the robustness passport for each. | Sidebar shows `Model checkpoint available · GenImage v2`; predictions use `model_v2.safetensors` at boundary `0.50`. |
+
+Verify the two tracked model identities without modifying either checkpoint:
+
+```bash
+shasum -a 256 \
+  artifacts/checkpoints/model.safetensors \
+  artifacts/checkpoints/model_v2.safetensors
+```
+
+Expected hashes, in order:
+
+```text
+806fbabc5ecae8394369d08738cbf0c993568137d323a8133167e4557d04eed2  model.safetensors
+b45022d9dab2a02300934c239eee24dd40ef8e402f24c1f27fc2d63a46117c12  model_v2.safetensors
+```
+
+Evaluation of the committed checkpoints against the pinned manifests should
+match the published evidence, apart from insignificant floating-point display
+rounding. A fresh GPU retraining run can vary slightly because hardware kernels
+are not guaranteed to be bit-for-bit identical. WildFake remains
+demonstration-only, and its outcome must never be used to retrain, select, or
+retune a model.
+
 ## Required batch inference
 
 ```bash
@@ -300,6 +407,57 @@ remains published even though the project owner subsequently selected v2 for
 the Streamlit demonstration. Only the reviewed checkpoint and compact lineage
 metadata are tracked for deployment.
 
+## Limitations and future improvements
+
+RealityCheck is a screening prototype, not a provenance authority. Its score is
+an estimate of whether an image resembles the training data; it cannot prove who
+created an image, identify the exact generator, or establish malicious intent.
+Scores close to the `0.50` boundary should be treated as uncertain evidence.
+
+Current limitations:
+
+- **Cross-dataset false positives:** v2 generalizes much better to the held-out
+  GenImage generators, but its SID false-positive rate increased from 4.67% to
+  18.67% at the fixed `0.50` boundary. The validation-only calibration also
+  failed four of eight deployment gates. This trade-off is disclosed rather
+  than presented as universal improvement.
+- **Limited generator coverage:** SID and the selected GenImage subset cannot
+  represent every current or future image generator, editing pipeline,
+  screenshot process, illustration style, camera, or social-media platform.
+- **External benchmark scope:** WildFake contains only the exact organizer
+  subset used for the post-lock demonstration and includes same-label duplicate
+  content. Its result is useful evidence, but it is not a universal estimate of
+  real-world accuracy.
+- **Transformation coverage:** the 20 scenarios test common compression, blur,
+  resize, noise, colour, and crop operations individually. They do not cover
+  every combination, repeated re-upload, screenshot, watermark, overlay, or
+  adversarial manipulation.
+- **Confidence calibration:** an AIGC score is a model output rather than a
+  guaranteed real-world probability. One global boundary may behave differently
+  across image domains.
+- **Prototype operations:** the free-tier CPU deployment can be slower under
+  load and has no production monitoring, human-review queue, abuse controls, or
+  formal privacy audit.
+
+Given more time, we would:
+
+1. Build a larger, properly licensed cross-source dataset containing newer
+   generators, diverse authentic cameras, screenshots, illustrations, and
+   multi-step social-media edits.
+2. Reserve a new untouched calibration set and add an explicit **inconclusive**
+   range around the decision boundary, prioritizing a lower false-positive rate
+   for real images.
+3. Evaluate combined transformations, repeated re-encoding, unseen platforms,
+   and generator-family holdouts instead of relying only on single-operation
+   stress tests.
+4. Compare the EfficientNet classifier with complementary forensic signals and
+   provenance metadata, while keeping the final decision interpretable.
+5. Conduct user testing with journalists, moderators, and ordinary users to
+   improve warnings, accessibility, confidence explanations, and human-review
+   workflows.
+6. Add production monitoring for distribution drift, latency, failures, and
+   false-positive reports before considering consequential use.
+
 ## Current verified status
 
 - Core training, inference, transformation, evaluation, and Streamlit code is
@@ -334,3 +492,36 @@ metadata are tracked for deployment.
 
 See [`docs/submission/requirements-checklist.md`](docs/submission/requirements-checklist.md)
 for the remaining evidence and submission gates.
+
+## Team contributions
+
+### Toh Wei Jun — Robustness and Preprocessing Engineer
+
+- Implemented deterministic JPEG compression, blur, resize, noise, colour-jitter, and cropping transformations.
+- Helped align image preprocessing across training, evaluation, and inference.
+- Set up the local machine-learning environment.
+- Tested transformations for repeatability and correct output.
+
+### Jonah Wee — Dataset, Training, and Deployment Engineer
+
+- Prepared and evaluated the WildFake demonstration subset.
+- Developed the GenImage v2 Kaggle training workflow.
+- Trained and compared the v1 and v2 checkpoints.
+- Integrated the selected v2 checkpoint into the Streamlit application.
+- Verified model hashes, dataset isolation, and deployment behaviour.
+
+### Saichandar — Evaluation and Quality-Assurance Engineer
+
+- Designed test cases for authentic, generated, and transformed images.
+- Reviewed model metrics, confusion counts, false positives, and false negatives.
+- Performed manual testing of the Streamlit upload and robustness-test workflow.
+- Helped document limitations, test findings, and reproducibility steps.
+- Supported demo preparation and presentation testing.
+
+### Ling Si Han — Project Lead and Application Integration Engineer
+
+- Developed and integrated the core EfficientNet-B0 detection pipeline.
+- Built the Streamlit robustness-passport interface.
+- Integrated the training, inference, evaluation, and data-processing components.
+- Developed the validation-only calibration workflow and reviewed deployment trade-offs.
+- Maintained repository integration, documentation, and release readiness.
