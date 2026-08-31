@@ -1,0 +1,297 @@
+{
+  "datasets": {
+    "genimage": {
+      "class_counts": {
+        "generated": 560,
+        "real": 560
+      },
+      "dataset_id": "cartografia/unbiased-tiny-genimage",
+      "manifest_sha256": "3be38cf60de6da1fc523fa21796087d8c334cf33283bb9a3907d0f83e981453d",
+      "name": "GenImage",
+      "split": "test",
+      "test_content_digest": "03b47414aad49389f634f6705cc55914d59c711863da2f0fabea872bc717d398",
+      "total_count": 1120
+    },
+    "sid": {
+      "class_counts": {
+        "generated": 300,
+        "real": 300
+      },
+      "dataset_id": "saberzl/SID_Set",
+      "manifest_sha256": "6267a8d7e7749c1870601e196fe7ce1cc0fc2542a9975fa939832817e7fd3d9d",
+      "name": "SID",
+      "split": "test",
+      "test_content_digest": "061fc4a2ac5464d12575b239705462b56ba77ac9008db95fb07c63c5afd784b3",
+      "total_count": 600
+    }
+  },
+  "decision_threshold": 0.5,
+  "models": {
+    "v1": {
+      "checkpoint_sha256": "806fbabc5ecae8394369d08738cbf0c993568137d323a8133167e4557d04eed2",
+      "role": "frozen parent"
+    },
+    "v2": {
+      "checkpoint_sha256": "b45022d9dab2a02300934c239eee24dd40ef8e402f24c1f27fc2d63a46117c12",
+      "parent_checkpoint_sha256": "806fbabc5ecae8394369d08738cbf0c993568137d323a8133167e4557d04eed2",
+      "role": "warm-start candidate; not deployed automatically"
+    }
+  },
+  "results": {
+    "genimage": {
+      "delta_v2_minus_v1": {
+        "clean_metrics": {
+          "average_precision": 0.22584775096962306,
+          "balanced_accuracy": 0.19999999999999996,
+          "brier_score": -0.17804226516014646,
+          "f1": 0.44317541444486136,
+          "false_negative_rate": -0.4357142857142857,
+          "false_positive_rate": 0.03571428571428571,
+          "roc_auc": 0.2600382653061225
+        },
+        "clean_to_worst_roc_auc_drop": 0.011345663265306172,
+        "definition": "v2 minus v1; negative is better for FPR, FNR, and Brier score",
+        "mean_transformed_metrics": {
+          "average_precision": 0.22219466702095236,
+          "balanced_accuracy": 0.19962406015037593,
+          "brier_score": -0.17839581689535408,
+          "f1": 0.4413287559711845,
+          "false_negative_rate": -0.4473684210526316,
+          "false_positive_rate": 0.0481203007518797,
+          "roc_auc": 0.25133676825993545
+        },
+        "worst_case_roc_auc": 0.24869260204081634
+      },
+      "v1": {
+        "clean": {
+          "confusion": {
+            "class_normalized": {
+              "generated": {
+                "predicted_generated": 0.1625,
+                "predicted_real": 0.8375
+              },
+              "real": {
+                "predicted_generated": 0.04642857142857143,
+                "predicted_real": 0.9535714285714286
+              }
+            },
+            "raw": {
+              "false_negative": 469,
+              "false_positive": 26,
+              "true_negative": 534,
+              "true_positive": 91
+            }
+          },
+          "metrics": {
+            "average_precision": 0.6442188606549093,
+            "balanced_accuracy": 0.5580357142857143,
+            "brier_score": 0.34670183197348853,
+            "f1": 0.2688330871491876,
+            "false_negative_rate": 0.8375,
+            "false_positive_rate": 0.04642857142857143,
+            "roc_auc": 0.6032270408163265
+          },
+          "num_samples": 1120
+        },
+        "robustness": {
+          "clean_to_worst_roc_auc_drop": 0.04417410714285708,
+          "mean_transformed": {
+            "average_precision": 0.6433330175921249,
+            "balanced_accuracy": 0.5603853383458647,
+            "brier_score": 0.34600034553844583,
+            "f1": 0.2721098736601223,
+            "false_negative_rate": 0.8326127819548872,
+            "false_positive_rate": 0.04661654135338346,
+            "roc_auc": 0.6122365064446832
+          },
+          "worst_case": {
+            "metric": "roc_auc",
+            "severity": 0.05,
+            "transform": "gaussian_noise",
+            "value": 0.5590529336734694
+          }
+        }
+      },
+      "v2": {
+        "clean": {
+          "confusion": {
+            "class_normalized": {
+              "generated": {
+                "predicted_generated": 0.5982142857142857,
+                "predicted_real": 0.4017857142857143
+              },
+              "real": {
+                "predicted_generated": 0.08214285714285714,
+                "predicted_real": 0.9178571428571428
+              }
+            },
+            "raw": {
+              "false_negative": 225,
+              "false_positive": 46,
+              "true_negative": 514,
+              "true_positive": 335
+            }
+          },
+          "metrics": {
+            "average_precision": 0.8700666116245324,
+            "balanced_accuracy": 0.7580357142857143,
+            "brier_score": 0.16865956681334207,
+            "f1": 0.7120085015940489,
+            "false_negative_rate": 0.4017857142857143,
+            "false_positive_rate": 0.08214285714285714,
+            "roc_auc": 0.863265306122449
+          },
+          "num_samples": 1120
+        },
+        "robustness": {
+          "clean_to_worst_roc_auc_drop": 0.05551977040816325,
+          "mean_transformed": {
+            "average_precision": 0.8655276846130773,
+            "balanced_accuracy": 0.7600093984962406,
+            "brier_score": 0.16760452864309175,
+            "f1": 0.7134386296313068,
+            "false_negative_rate": 0.3852443609022556,
+            "false_positive_rate": 0.09473684210526316,
+            "roc_auc": 0.8635732747046186
+          },
+          "worst_case": {
+            "metric": "roc_auc",
+            "severity": 0.05,
+            "transform": "gaussian_noise",
+            "value": 0.8077455357142858
+          }
+        }
+      }
+    },
+    "sid": {
+      "delta_v2_minus_v1": {
+        "clean_metrics": {
+          "average_precision": -0.0024268587782427797,
+          "balanced_accuracy": -0.06333333333333335,
+          "brier_score": 0.03749931260424854,
+          "f1": -0.05572090951426434,
+          "false_negative_rate": -0.013333333333333334,
+          "false_positive_rate": 0.14,
+          "roc_auc": -0.0032999999999999696
+        },
+        "clean_to_worst_roc_auc_drop": 0.005022222222222261,
+        "definition": "v2 minus v1; negative is better for FPR, FNR, and Brier score",
+        "mean_transformed_metrics": {
+          "average_precision": -0.0033775505576948417,
+          "balanced_accuracy": -0.04973684210526319,
+          "brier_score": 0.0320855207466969,
+          "f1": -0.0424844895538351,
+          "false_negative_rate": -0.027192982456140352,
+          "false_positive_rate": 0.12666666666666665,
+          "roc_auc": -0.004273099415204706
+        },
+        "worst_case_roc_auc": -0.00832222222222223
+      },
+      "v1": {
+        "clean": {
+          "confusion": {
+            "class_normalized": {
+              "generated": {
+                "predicted_generated": 0.9733333333333334,
+                "predicted_real": 0.02666666666666667
+              },
+              "real": {
+                "predicted_generated": 0.04666666666666667,
+                "predicted_real": 0.9533333333333334
+              }
+            },
+            "raw": {
+              "false_negative": 8,
+              "false_positive": 14,
+              "true_negative": 286,
+              "true_positive": 292
+            }
+          },
+          "metrics": {
+            "average_precision": 0.9964701872196274,
+            "balanced_accuracy": 0.9633333333333334,
+            "brier_score": 0.028265902634278355,
+            "f1": 0.9636963696369637,
+            "false_negative_rate": 0.02666666666666667,
+            "false_positive_rate": 0.04666666666666667,
+            "roc_auc": 0.9964
+          },
+          "num_samples": 600
+        },
+        "robustness": {
+          "clean_to_worst_roc_auc_drop": 0.00612222222222214,
+          "mean_transformed": {
+            "average_precision": 0.9958396252697919,
+            "balanced_accuracy": 0.9583333333333333,
+            "brier_score": 0.03186591606390244,
+            "f1": 0.957542961184158,
+            "false_negative_rate": 0.047017543859649125,
+            "false_positive_rate": 0.03631578947368421,
+            "roc_auc": 0.9957836257309941
+          },
+          "worst_case": {
+            "metric": "roc_auc",
+            "severity": 0.1,
+            "transform": "gaussian_noise",
+            "value": 0.9902777777777778
+          }
+        }
+      },
+      "v2": {
+        "clean": {
+          "confusion": {
+            "class_normalized": {
+              "generated": {
+                "predicted_generated": 0.9866666666666667,
+                "predicted_real": 0.013333333333333334
+              },
+              "real": {
+                "predicted_generated": 0.18666666666666668,
+                "predicted_real": 0.8133333333333334
+              }
+            },
+            "raw": {
+              "false_negative": 4,
+              "false_positive": 56,
+              "true_negative": 244,
+              "true_positive": 296
+            }
+          },
+          "metrics": {
+            "average_precision": 0.9940433284413847,
+            "balanced_accuracy": 0.9,
+            "brier_score": 0.0657652152385269,
+            "f1": 0.9079754601226994,
+            "false_negative_rate": 0.013333333333333334,
+            "false_positive_rate": 0.18666666666666668,
+            "roc_auc": 0.9931
+          },
+          "num_samples": 600
+        },
+        "robustness": {
+          "clean_to_worst_roc_auc_drop": 0.011144444444444401,
+          "mean_transformed": {
+            "average_precision": 0.992462074712097,
+            "balanced_accuracy": 0.9085964912280701,
+            "brier_score": 0.06395143681059934,
+            "f1": 0.915058471630323,
+            "false_negative_rate": 0.019824561403508772,
+            "false_positive_rate": 0.16298245614035087,
+            "roc_auc": 0.9915105263157894
+          },
+          "worst_case": {
+            "metric": "roc_auc",
+            "severity": 0.1,
+            "transform": "gaussian_noise",
+            "value": 0.9819555555555556
+          }
+        }
+      }
+    }
+  },
+  "scenario_count": 20,
+  "scenario_mode": "full",
+  "schema_version": 1,
+  "scope": "Held-out GenImage and SID comparison for the frozen v1 and warm-started v2 checkpoints. WildFake was not accessed or used for model selection.",
+  "seed": 42
+}

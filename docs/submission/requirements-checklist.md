@@ -65,7 +65,11 @@
 - [x] Warm-start loading happens before optimizer construction and cannot overwrite v1.
 - [x] The evaluator requires all 20 scenarios, fixed threshold `0.50`, exact test counts, and finite metrics.
 - [x] The export separates local audit artifacts from sanitized public evidence and never auto-promotes v2.
-- [ ] The real Kaggle run has produced `genimage_v2_export.zip`.
-- [ ] The v1-versus-v2 GenImage and SID results have been reviewed for deployment.
-- [ ] Any accepted v2 numerical claims have been copied from the validated public summary.
+- [x] The real Kaggle run has produced `genimage_v2_export.zip`.
+- [x] The v1-versus-v2 GenImage and SID results have been reviewed for deployment.
+- [x] Accepted v2 numerical claims were copied from the validated public summary.
+- [x] v1 remains deployed because v2 materially increased SID false positives at threshold `0.50`.
+- [x] The calibration policy minimizes SID validation false positives under predeclared SID-recall and GenImage guardrails.
+- [x] The calibration runner performs validation inference only and cannot retrain the checkpoint.
+- [ ] The validation-only Kaggle calibration export has been reviewed without retuning from held-out results.
 - [ ] If v2 is promoted, the application change and checkpoint lineage have received a separate review.

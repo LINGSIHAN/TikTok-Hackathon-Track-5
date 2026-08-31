@@ -1,0 +1,128 @@
+{
+  "class_counts": {
+    "0_real": 5600,
+    "1_generated": 5600
+  },
+  "combined_counts": {
+    "genimage_rows": 11200,
+    "sid_train_rows": 4800,
+    "test": 1120,
+    "total": 16000,
+    "train": 13760,
+    "val": 1120
+  },
+  "combined_manifest_sha256": "6e65b23145c0dbe0033cdc7b83c34af6773e2013cf8c9c4c644e3feecc78a803",
+  "dataset": "cartografia/unbiased-tiny-genimage",
+  "dataset_digest": "a037ddc229d579a11f8fc21b6f09ff6ae414febb5b89f9e627fbf8ca49833c5b",
+  "dataset_id": "cartografia/unbiased-tiny-genimage",
+  "dataset_url": "https://www.kaggle.com/datasets/cartografia/unbiased-tiny-genimage",
+  "dataset_version": 1,
+  "deduplication": {
+    "duplicate_within_genimage": 13
+  },
+  "generator_counts": {
+    "ADM": 800,
+    "BigGAN": 800,
+    "Midjourney": 800,
+    "Nature": 5600,
+    "VQDM": 800,
+    "glide": 800,
+    "stable_diffusion_v_1_5": 800,
+    "wukong": 800
+  },
+  "generator_split_counts": {
+    "ADM": {
+      "test": 80,
+      "train": 640,
+      "val": 80
+    },
+    "BigGAN": {
+      "test": 80,
+      "train": 640,
+      "val": 80
+    },
+    "Midjourney": {
+      "test": 80,
+      "train": 640,
+      "val": 80
+    },
+    "Nature": {
+      "test": 560,
+      "train": 4480,
+      "val": 560
+    },
+    "VQDM": {
+      "test": 80,
+      "train": 640,
+      "val": 80
+    },
+    "glide": {
+      "test": 80,
+      "train": 640,
+      "val": 80
+    },
+    "stable_diffusion_v_1_5": {
+      "test": 80,
+      "train": 640,
+      "val": 80
+    },
+    "wukong": {
+      "test": 80,
+      "train": 640,
+      "val": 80
+    }
+  },
+  "image_normalization": "RGB JPEG, quality 95, 4:4:4 subsampling",
+  "inventory": {
+    "file_count": 23329,
+    "generator_image_counts": {
+      "ADM": 2500,
+      "BigGAN": 2500,
+      "Midjourney": 2500,
+      "VQDM": 2500,
+      "glide": 2500,
+      "stable_diffusion_v_1_5": 2500,
+      "wukong": 2500
+    },
+    "inventory_digest": "4622bbed0011b8c9a099e5e0a14dec838840cb675d1fb0c16c640b5271ba154e",
+    "metadata_file": "nature_metadata.csv",
+    "metadata_sha256": "5f9a46e53e624339f6db8cc4d4a4fe5e54a0371e4b07a7da278300f6ed699e91",
+    "nature_image_count": 5828,
+    "total_bytes": 2528629592
+  },
+  "license": "CC BY-NC-SA 4.0",
+  "license_confirmation": {
+    "confirmed": true,
+    "confirmed_on": "2026-08-31",
+    "scope": "hackathon non-commercial training"
+  },
+  "manifest_sha256": "3be38cf60de6da1fc523fa21796087d8c334cf33283bb9a3907d0f83e981453d",
+  "manifests": {
+    "genimage": "data/processed/genimage_v2_manifest.csv",
+    "training": "data/processed/train_v2_manifest.csv"
+  },
+  "pillow_version": "11.3.0",
+  "real_source_class_count": 575,
+  "schema_version": 1,
+  "seed": 42,
+  "selected_digest": "a037ddc229d579a11f8fc21b6f09ff6ae414febb5b89f9e627fbf8ca49833c5b",
+  "selected_digest_definition": "SHA-256 of sorted tab-separated sha256,label,split,dataset,source_id,generator rows",
+  "sha256_definition": "SHA-256 of the stored normalized JPEG bytes",
+  "sid_manifest_sha256": "6267a8d7e7749c1870601e196fe7ce1cc0fc2542a9975fa939832817e7fd3d9d",
+  "split_counts": {
+    "test": {
+      "0": 560,
+      "1": 560
+    },
+    "train": {
+      "0": 4480,
+      "1": 4480
+    },
+    "val": {
+      "0": 560,
+      "1": 560
+    }
+  },
+  "total": 11200,
+  "wildfake_used": false
+}

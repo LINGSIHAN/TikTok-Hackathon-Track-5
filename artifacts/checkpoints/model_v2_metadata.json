@@ -1,0 +1,98 @@
+{
+  "automatic_promotion": false,
+  "best_epoch": 3,
+  "best_validation_loss": 0.5735817445175988,
+  "checkpoint_path": "artifacts/checkpoints/model_v2.safetensors",
+  "checkpoint_sha256": "b45022d9dab2a02300934c239eee24dd40ef8e402f24c1f27fc2d63a46117c12",
+  "config": {
+    "data": {
+      "batch_size": 64,
+      "image_size": 224,
+      "manifest_path": "data/processed/train_v2_manifest.csv",
+      "num_workers": 2,
+      "test_split": "test",
+      "train_split": "train",
+      "val_split": "val"
+    },
+    "initialization": {
+      "checkpoint_path": "artifacts/checkpoints/model.safetensors",
+      "expected_sha256": "806fbabc5ecae8394369d08738cbf0c993568137d323a8133167e4557d04eed2",
+      "freeze_frozen_batchnorm": true
+    },
+    "model": {
+      "freeze_backbone": true,
+      "pretrained": false,
+      "unfreeze_last_blocks": 1
+    },
+    "output": {
+      "checkpoint_path": "artifacts/checkpoints/model_v2.safetensors",
+      "history_path": "artifacts/metrics/genimage_v2_training_history.json",
+      "metadata_path": "artifacts/checkpoints/model_v2_metadata.json"
+    },
+    "robustness": {
+      "clean_probability": 0.35,
+      "enabled": true
+    },
+    "seed": 42,
+    "training": {
+      "epochs": 3,
+      "learning_rate": 3e-05,
+      "mixed_precision": true,
+      "patience": 1,
+      "weight_decay": 0.0001
+    }
+  },
+  "dataset_lineage": {
+    "combined_manifest_sha256": "6e65b23145c0dbe0033cdc7b83c34af6773e2013cf8c9c4c644e3feecc78a803",
+    "genimage_inventory_digest": "4622bbed0011b8c9a099e5e0a14dec838840cb675d1fb0c16c640b5271ba154e",
+    "genimage_manifest_sha256": "3be38cf60de6da1fc523fa21796087d8c334cf33283bb9a3907d0f83e981453d",
+    "genimage_selected_digest": "a037ddc229d579a11f8fc21b6f09ff6ae414febb5b89f9e627fbf8ca49833c5b",
+    "sid_manifest_sha256": "6267a8d7e7749c1870601e196fe7ce1cc0fc2542a9975fa939832817e7fd3d9d"
+  },
+  "device": "cuda",
+  "elapsed_seconds": 471.64241766929626,
+  "environment": {
+    "compiled_cuda_arches": [
+      "sm_70",
+      "sm_75",
+      "sm_80",
+      "sm_86",
+      "sm_90",
+      "sm_100",
+      "sm_120"
+    ],
+    "cuda_probe_checksum": 3680.0,
+    "cuda_runtime": "12.8",
+    "datasets": "4.8.5",
+    "gpu": "Tesla T4",
+    "gpu_capability": [
+      7,
+      5
+    ],
+    "huggingface_hub": "1.11.0",
+    "numpy": "2.0.2",
+    "pandas": "2.3.3",
+    "pillow": "11.3.0",
+    "python": "3.12.13",
+    "pytorch": "2.10.0+cu128",
+    "required_cuda_arch": "sm_75",
+    "safetensors": "0.7.0",
+    "torchvision": "0.25.0+cu128"
+  },
+  "epochs_completed": 3,
+  "license_confirmation": {
+    "confirmed_on": "2026-08-31",
+    "statement": "Participant confirmed organizer/licensor permission on 2026-08-31; private correspondence is not included in public artifacts."
+  },
+  "parameter_count": 4008829,
+  "parent_checkpoint_sha256": "806fbabc5ecae8394369d08738cbf0c993568137d323a8133167e4557d04eed2",
+  "preprocessing_contract": "pil-exif-white-alpha-short-edge-bilinear-center-crop-imagenet-v1",
+  "repository": {
+    "branch": "master",
+    "commit": "34cc2fb3619fec609006d8f7097c9981882d2816",
+    "repository": "https://github.com/LINGSIHAN/TikTok-Hackathon-Track-5.git"
+  },
+  "schema_version": 1,
+  "trainable_parameter_count": 413441,
+  "wildfake_used": false
+}

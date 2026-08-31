@@ -1,0 +1,71 @@
+[
+  {
+    "epoch": 1,
+    "train_loss": 0.657812656081,
+    "train_metrics": {
+      "average_precision": 0.8422206593296843,
+      "balanced_accuracy": 0.7380087209302326,
+      "brier_score": 0.19290836790990695,
+      "f1": 0.7035605624537455,
+      "false_negative_rate": 0.37819767441860463,
+      "false_positive_rate": 0.14578488372093024,
+      "roc_auc": 0.8030895395315035
+    },
+    "validation_loss": 0.8187842096601213,
+    "validation_metrics": {
+      "average_precision": 0.7534111320653513,
+      "balanced_accuracy": 0.6705357142857142,
+      "brier_score": 0.2418439323639051,
+      "f1": 0.5830508474576271,
+      "false_negative_rate": 0.5392857142857143,
+      "false_positive_rate": 0.11964285714285715,
+      "roc_auc": 0.7273373724489796
+    }
+  },
+  {
+    "epoch": 2,
+    "train_loss": 0.5237619865772336,
+    "train_metrics": {
+      "average_precision": 0.8732527943395624,
+      "balanced_accuracy": 0.7711482558139535,
+      "brier_score": 0.16297450360167193,
+      "f1": 0.7491436310045407,
+      "false_negative_rate": 0.31656976744186044,
+      "false_positive_rate": 0.14113372093023255,
+      "roc_auc": 0.8478811498614116
+    },
+    "validation_loss": 0.644633778503963,
+    "validation_metrics": {
+      "average_precision": 0.8107961794576019,
+      "balanced_accuracy": 0.71875,
+      "brier_score": 0.19879245662823186,
+      "f1": 0.665249734325186,
+      "false_negative_rate": 0.44107142857142856,
+      "false_positive_rate": 0.12142857142857143,
+      "roc_auc": 0.7988775510204081
+    }
+  },
+  {
+    "epoch": 3,
+    "train_loss": 0.45208898214406745,
+    "train_metrics": {
+      "average_precision": 0.8946786623113301,
+      "balanced_accuracy": 0.8004360465116279,
+      "brier_score": 0.1424112708540518,
+      "f1": 0.7879209144269386,
+      "false_negative_rate": 0.25857558139534886,
+      "false_positive_rate": 0.14055232558139535,
+      "roc_auc": 0.8774134244862087
+    },
+    "validation_loss": 0.5735817445175988,
+    "validation_metrics": {
+      "average_precision": 0.8437165181616844,
+      "balanced_accuracy": 0.7517857142857143,
+      "brier_score": 0.17917439530319765,
+      "f1": 0.7055084745762712,
+      "false_negative_rate": 0.40535714285714286,
+      "false_positive_rate": 0.09107142857142857,
+      "roc_auc": 0.8384948979591836
+    }
+  }
+]

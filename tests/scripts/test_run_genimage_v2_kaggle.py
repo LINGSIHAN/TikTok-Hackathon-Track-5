@@ -263,17 +263,17 @@ def test_v2_config_matches_strict_warm_start_contract() -> None:
     runner.validate_v2_training_config(runner.REPOSITORY_ROOT)
     config = load_config(runner.REPOSITORY_ROOT / runner.V2_CONFIG)
 
-    assert config.data.manifest_path == str(runner.COMBINED_MANIFEST)
+    assert config.data.manifest_path == runner.COMBINED_MANIFEST.as_posix()
     assert config.model.pretrained is False
     assert config.model.freeze_backbone is True
     assert config.model.unfreeze_last_blocks == 1
     assert config.initialization is not None
-    assert config.initialization.checkpoint_path == str(runner.V1_CHECKPOINT)
+    assert config.initialization.checkpoint_path == runner.V1_CHECKPOINT.as_posix()
     assert config.initialization.expected_sha256 == runner.V1_SHA256
     assert config.initialization.freeze_frozen_batchnorm is True
-    assert config.output.checkpoint_path == str(runner.V2_CHECKPOINT)
-    assert config.output.metadata_path == str(runner.V2_METADATA)
-    assert config.output.history_path == str(runner.V2_HISTORY)
+    assert config.output.checkpoint_path == runner.V2_CHECKPOINT.as_posix()
+    assert config.output.metadata_path == runner.V2_METADATA.as_posix()
+    assert config.output.history_path == runner.V2_HISTORY.as_posix()
     assert config.training.epochs == 3
     assert config.training.learning_rate == pytest.approx(3e-5)
     assert config.training.weight_decay == pytest.approx(1e-4)

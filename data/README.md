@@ -84,6 +84,13 @@ predictions, and audit outputs remain ignored; only compact provenance, digests,
 and reviewed aggregate evidence may be committed. WildFake is neither read nor
 used anywhere in this workflow.
 
+The completed T4 run is recorded by
+`processed/genimage_v2_manifest_summary.json`. Its candidate checkpoint was not
+promoted: held-out GenImage generalization improved substantially, but SID
+false positives increased at the fixed 0.50 threshold. Aggregate evidence is
+published under `artifacts/metrics/genimage_v2_summary.json`; per-image
+predictions remain in the ignored local audit export.
+
 ## WildFake post-lock demonstration subset
 
 WildFake is an external, demonstration-only benchmark. It is never an input to

@@ -84,9 +84,13 @@ duplicate groups and 8,717 unique content hashes; metrics retain all organizer
 rows, so this is not a sample of 13,841 independent images. We present it as a
 transparent external demonstration, not universal detector performance.
 
-The GenImage v2 workflow is not included in these numerical claims yet. Add its
-results only after the real Kaggle run produces a validated, sanitized
-`genimage_v2_export.zip`; until then, v1 is the deployed model of record.
+The review-gated GenImage v2 run completed, but we deliberately did not deploy
+it. On the held-out 1,120-image GenImage test, v2 improves ROC-AUC from 0.6032
+to 0.8633 and balanced accuracy from 55.80% to 75.80%. On the 600-image SID
+regression test, however, balanced accuracy falls from 96.33% to 90.00% and
+false-positive rate rises from 4.67% to 18.67%. We retained v1 as the model of
+record rather than hiding that trade-off or selecting a new threshold on test
+data; v2 requires calibration using validation data only before reconsideration.
 
 ## Challenges and lessons
 
